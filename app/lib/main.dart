@@ -61,44 +61,83 @@ class _MyHomePageState extends State<MyHomePage> {
                 )
               ],
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                new Container(
-                    decoration: new BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: new BorderRadius.only(
-                            topLeft: const Radius.circular(50.0),
-                            topRight: const Radius.circular(50.0)),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey,
-                            blurRadius: 20,
-                          ),
-                        ]),
-                    width: size.width,
-                    height: 300.0,
-                    child: Column(
-                      children: <Widget>[
-                        new Container(
-                          child: Text(
-                            "Today",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 30.0,
-                            ),
-                            textAlign: TextAlign.left,
-                          ),
-                          padding: EdgeInsets.all(30.0),
-                          width: size.width,
-                        ),
-                      ],
-                    )),
-              ],
+            Container(
+              child: new BottomDrawerInteractor(),
             )
           ])),
     );
+  }
+}
+
+class BottomDrawerInteractor extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new GestureDetector(
+        child: new BottomDrawer(),
+        onPanUpdate: (details) {
+          if (details.delta.dy < 0) {
+            Navigator.of(context).push(new MaterialPageRoute(
+                builder: (BuildContext context) => new MedList()));
+          }
+        });
+  }
+}
+
+class BottomDrawer extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        new Container(
+            decoration: new BoxDecoration(
+                color: Colors.white,
+                borderRadius: new BorderRadius.only(
+                    topLeft: const Radius.circular(50.0),
+                    topRight: const Radius.circular(50.0)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    blurRadius: 20,
+                  ),
+                ]),
+            width: size.width,
+            height: 300.0,
+            child: Column(
+              children: <Widget>[
+                new Container(
+                  child: Text(
+                    "Todays",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 30.0,
+                    ),
+                    textAlign: TextAlign.left,
+                  ),
+                  padding: EdgeInsets.all(30.0),
+                  width: size.width,
+                ),
+              ],
+            )),
+      ],
+    );
+  }
+}
+
+class MedList extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new MaterialApp(
+        title: 'Hello Check',
+        theme: ThemeData(primarySwatch: Colors.amber, fontFamily: 'Montserrat'),
+        home: new Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+          ),
+        ));
   }
 }
