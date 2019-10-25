@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:app/models/ui/home.dart';
+import 'package:app/models/ui/medlist.dart';
 
 void main() => runApp(MyApp());
 
@@ -7,7 +9,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: new MyHomePage(),
+      home: MyHomePage(),
     );
   }
 }
@@ -23,121 +25,24 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    String nextMed = "Diabetes";
-
     return new MaterialApp(
       title: 'Hello',
       theme: ThemeData(primarySwatch: Colors.amber, fontFamily: 'Montserrat'),
       home: new Scaffold(
           drawer: Drawer(),
           appBar: AppBar(
-            elevation: 0.0,
-          ),
-          body: Stack(children: <Widget>[
-            Container(
-              decoration: new BoxDecoration(
-                color: Colors.amber,
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                new Container(
-                  child: Container(
-                    child: Text(
-                      nextMed,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 30,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    padding: EdgeInsets.all(50),
-                    width: size.width,
-                  ),
-                )
-              ],
-            ),
-            Container(
-              child: new BottomDrawerInteractor(),
-            )
-          ])),
-    );
-  }
-}
-
-class BottomDrawerInteractor extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new GestureDetector(
-        child: new BottomDrawer(),
-        onPanUpdate: (details) {
-          if (details.delta.dy < 0) {
-            Navigator.of(context).push(new MaterialPageRoute(
-                builder: (BuildContext context) => new MedList()));
-          }
-        });
-  }
-}
-
-class BottomDrawer extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        new Container(
-            decoration: new BoxDecoration(
-                color: Colors.white,
-                borderRadius: new BorderRadius.only(
-                    topLeft: const Radius.circular(50.0),
-                    topRight: const Radius.circular(50.0)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey,
-                    blurRadius: 20,
-                  ),
-                ]),
-            width: size.width,
-            height: 300.0,
-            child: Column(
-              children: <Widget>[
-                new Container(
-                  child: Text(
-                    "Todays",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 30.0,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                  padding: EdgeInsets.all(30.0),
-                  width: size.width,
-                ),
-              ],
-            )),
-      ],
-    );
-  }
-}
-
-class MedList extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-        title: 'Hello Check',
-        theme: ThemeData(primarySwatch: Colors.amber, fontFamily: 'Montserrat'),
-        home: new Scaffold(
-          appBar: AppBar(
             elevation: 0,
           ),
-        ));
+          body: Stack(children: <Widget>[
+            NextMed(),
+            PageView(
+              children: <Widget>[
+                new BottomDrawer(),
+                new MedList(),
+              ],
+              scrollDirection: Axis.vertical,
+            ),
+          ])),
+    );
   }
 }
