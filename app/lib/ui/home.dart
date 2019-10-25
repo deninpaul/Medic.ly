@@ -23,7 +23,7 @@ class BottomDrawer extends StatelessWidget {
                   ),
                 ]),
             width: size.width,
-            height: 300.0,
+            height: 220.0,
             child: Column(
               children: <Widget>[
                 new Container(
@@ -51,8 +51,7 @@ class NextMed extends StatelessWidget {
     final size = MediaQuery.of(context).size;
     String nextMed = "Diabetes";
 
-    return Stack(
-      children: <Widget>[
+    return Stack(children: <Widget>[
       Container(
         decoration: new BoxDecoration(
           color: Colors.amber,
@@ -79,7 +78,6 @@ class NextMed extends StatelessWidget {
           )
         ],
       ),
-      ]
-    );
+    ]);
   }
 }
