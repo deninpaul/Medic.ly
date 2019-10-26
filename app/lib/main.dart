@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:app/models/global.dart';
 import 'package:app/ui/home.dart';
 import 'package:app/ui/medlist.dart';
 
@@ -24,15 +23,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _page = 0;
+  Color _appBarColor = Colors.amber;
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-        title: 'Hello',
+        title: 'Home',
         theme: ThemeData(primarySwatch: Colors.amber, fontFamily: 'Montserrat'),
         home: new Scaffold(
           drawer: Drawer(),
           appBar: new AppBar(
             elevation: 0,
+            backgroundColor: _appBarColor,
           ),
           body: Stack(children: <Widget>[
             NextMed(),
@@ -42,13 +45,29 @@ class _MyHomePageState extends State<MyHomePage> {
                 new MedList(),
               ],
               scrollDirection: Axis.vertical,
+              onPageChanged: onPageChanged,
             ),
             Align(
               alignment: Alignment.bottomCenter,
               child: bottomFABs(),
             )
-            
           ]),
         ));
+  }
+
+  void onPageChanged(int page) {
+    Color _tempColor;
+    switch (page) {
+      case 0:
+        _tempColor = Colors.amber;
+        break;
+      case 1:
+        _tempColor = Colors.white;
+        break;
+    }
+    setState(() {
+      this._page = page;
+      this._appBarColor = _tempColor;
+    });
   }
 }

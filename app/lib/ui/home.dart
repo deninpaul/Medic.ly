@@ -37,6 +37,7 @@ class NextMed extends StatelessWidget {
   }
 }
 
+
 class BottomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -82,6 +83,7 @@ class BottomDrawer extends StatelessWidget {
   }
 }
 
+
 Row bottomFABs() {
   return Row(
     crossAxisAlignment: CrossAxisAlignment.center,
@@ -95,17 +97,31 @@ Row bottomFABs() {
             height: 70,
             color: Colors.transparent,
             child: RaisedButton(
-              
-              child: TextField(
-                decoration: InputDecoration(
-                    border: InputBorder.none, hintText: 'Search'),
+              child: Container(
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      child: TextField(
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Search',
+                            icon: Icon(Icons.search)),
+                        style: TextStyle(
+                          fontSize: 20.0,
+                        ),
+                      ),
+                      padding: EdgeInsets.only(left: 10),
+                    ),
+                  ],
+                ),
               ),
               onPressed: () {},
-              elevation: 10,
+              elevation: 5,
+              color: Colors.white,
               hoverColor: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(100)),
-              ),
+                  borderRadius: BorderRadius.all(Radius.circular(100)),
+                  side: BorderSide(color: Colors.amber, width: 3)),
             )),
         flex: 5,
       ),
@@ -118,7 +134,7 @@ Row bottomFABs() {
             onPressed: () {},
             child: Icon(Icons.add),
             foregroundColor: Colors.white,
-            elevation: 10,
+            elevation: 5,
           ),
         ),
         flex: 2,
