@@ -23,8 +23,22 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _page = 0;
   Color _appBarColor = Colors.amber;
+
+  void onPageChanged(int page) {
+    Color _tempColor;
+    switch (page) {
+      case 0:
+        _tempColor = Colors.amber;
+        break;
+      case 1:
+        _tempColor = Colors.white;
+        break;
+    }
+    setState(() {
+      this._appBarColor = _tempColor;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,21 +67,5 @@ class _MyHomePageState extends State<MyHomePage> {
             )
           ]),
         ));
-  }
-
-  void onPageChanged(int page) {
-    Color _tempColor;
-    switch (page) {
-      case 0:
-        _tempColor = Colors.amber;
-        break;
-      case 1:
-        _tempColor = Colors.white;
-        break;
-    }
-    setState(() {
-      this._page = page;
-      this._appBarColor = _tempColor;
-    });
   }
 }
