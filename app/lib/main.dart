@@ -1,3 +1,4 @@
+import 'package:app/ui/medlist.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:app/ui/home.dart';
 import 'package:app/ui/medlist.dart';
@@ -9,6 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: 'Home Page',
       home: MyHomePage(),
     );
   }
@@ -19,11 +21,12 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  MyHomePageState createState() => MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePageState extends State<MyHomePage> {
   Color _appBarColor = Colors.amber;
+  PageController _controller = PageController(initialPage: 0);
 
   void onPageChanged(int page) {
     Color _tempColor;
@@ -38,6 +41,18 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       this._appBarColor = _tempColor;
     });
+  }
+
+  bool onWillPop() {
+    if (_controller.page.round() == _controller.initialPage) {
+      return true;
+    } else {
+      _controller.previousPage(
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+      return false;
+    }
   }
 
   @override
@@ -56,10 +71,13 @@ class _MyHomePageState extends State<MyHomePage> {
             PageView(
               children: <Widget>[
                 new BottomDrawer(),
-                new MedList(),
+                //MedList()
+                WillPopScope(
+                    onWillPop: () => Future.sync(onWillPop), child: MedList()),
               ],
               scrollDirection: Axis.vertical,
               onPageChanged: onPageChanged,
+              controller: _controller,
             ),
             Align(
               alignment: Alignment.bottomCenter,
