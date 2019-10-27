@@ -50,19 +50,25 @@ class ListMedByDay extends State<MedListPage> {
 }
 
 Widget medThisDay(String dayofweek) {
+  
   return Container(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.start,
       children: <Widget>[
-        Text(
-          "$dayofweek",
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+        Container(
+          width: 330,
+          
+          child: Text(
+            "$dayofweek",
+            style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700,),
+            textAlign: TextAlign.left,
+          ),
         ),
         new Container(
           margin: EdgeInsets.all(25),
-          height: 100,
+          height: 150,
           child: getListView(),
         ),
       ],
@@ -75,23 +81,23 @@ ListView getListView() {
     scrollDirection: Axis.horizontal,
     children: <Widget>[
       Container(
-        width: 160.0,
+        width: 150.0,
         color: Colors.red,
       ),
       Container(
-        width: 160.0,
+        width: 150.0,
         color: Colors.blue,
       ),
       Container(
-        width: 160.0,
+        width: 150.0,
         color: Colors.green,
       ),
       Container(
-        width: 160.0,
+        width: 150.0,
         color: Colors.yellow,
       ),
       Container(
-        width: 160.0,
+        width: 150.0,
         color: Colors.orange,
       ),
     ],

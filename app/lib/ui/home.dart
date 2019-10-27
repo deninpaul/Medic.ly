@@ -1,4 +1,6 @@
+import 'package:app/ui/medlist.dart';
 import 'package:flutter/material.dart';
+import 'package:app/ui/medlist.dart';
 
 class NextMed extends StatelessWidget {
   @override
@@ -37,7 +39,6 @@ class NextMed extends StatelessWidget {
   }
 }
 
-
 class BottomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -61,20 +62,13 @@ class BottomDrawer extends StatelessWidget {
                   ),
                 ]),
             width: size.width,
-            height: 300.0,
+            height: 330.0,
             child: Column(
               children: <Widget>[
+                Container(height: 20),
                 new Container(
-                  child: Text(
-                    "Todays",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 30.0,
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-                  padding: EdgeInsets.all(30.0),
-                  width: size.width,
+                  child: medThisDay("Todays"),
+                  padding: EdgeInsets.all(0.0),
                 ),
               ],
             )),
@@ -82,7 +76,6 @@ class BottomDrawer extends StatelessWidget {
     );
   }
 }
-
 
 Row bottomFABs() {
   return Row(
