@@ -1,7 +1,8 @@
-import 'package:app/ui/medlist.dart' as prefix0;
+import 'package:app/ui/medlist.dart';
 import 'package:flutter/material.dart';
 import 'package:app/ui/home.dart';
 import 'package:app/ui/medlist.dart';
+import 'package:app/ui/newReminder.dart';
 
 void main() => runApp(MyApp());
 
@@ -81,7 +82,7 @@ class MyHomePageState extends State<MyHomePage> {
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: bottomFABs(),
+              child: BottomFABs(),
             )
           ]),
         ));

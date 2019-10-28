@@ -28,11 +28,9 @@ class MedListPage extends StatefulWidget {
 }
 
 class ListMedByDay extends State<MedListPage> {
-
   @override
   Widget build(BuildContext context) {
-    
-      return ListView(
+    return ListView(
       children: <Widget>[
         medThisDay("Sunday"),
         medThisDay("Monday"),
@@ -50,7 +48,6 @@ class ListMedByDay extends State<MedListPage> {
 }
 
 Widget medThisDay(String dayofweek) {
-  
   return Container(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -59,17 +56,23 @@ Widget medThisDay(String dayofweek) {
       children: <Widget>[
         Container(
           width: 330,
-          
           child: Text(
             "$dayofweek",
-            style: TextStyle(fontSize: 25, fontWeight: FontWeight.w700,),
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w700,
+            ),
             textAlign: TextAlign.left,
           ),
         ),
         new Container(
           margin: EdgeInsets.all(25),
           height: 150,
-          child: getListView(),
+          child: Card(
+            child: getListView(),
+            elevation: 30,
+          ),
+
         ),
       ],
     ),

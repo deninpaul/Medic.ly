@@ -1,6 +1,7 @@
 import 'package:app/ui/medlist.dart';
 import 'package:flutter/material.dart';
 import 'package:app/ui/medlist.dart';
+import 'package:app/ui/newReminder.dart';
 
 class NextMed extends StatelessWidget {
   @override
@@ -77,61 +78,69 @@ class BottomDrawer extends StatelessWidget {
   }
 }
 
-Row bottomFABs() {
-  return Row(
-    crossAxisAlignment: CrossAxisAlignment.center,
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    mainAxisSize: MainAxisSize.max,
-    children: <Widget>[
-      Expanded(
-        child: Container(
-            margin: EdgeInsets.fromLTRB(15, 10, 0, 10),
-            width: 200,
-            height: 70,
-            color: Colors.transparent,
-            child: RaisedButton(
-              child: Container(
-                child: Stack(
-                  children: <Widget>[
-                    Container(
-                      child: TextField(
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Search',
-                            icon: Icon(Icons.search)),
-                        style: TextStyle(
-                          fontSize: 20.0,
+class BottomFABs extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisSize: MainAxisSize.max,
+      children: <Widget>[
+        Expanded(
+          child: Container(
+              margin: EdgeInsets.fromLTRB(15, 10, 0, 10),
+              width: 200,
+              height: 70,
+              color: Colors.transparent,
+              child: RaisedButton(
+                child: Container(
+                  child: Stack(
+                    children: <Widget>[
+                      Container(
+                        child: TextField(
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: 'Search',
+                              icon: Icon(Icons.search)),
+                          style: TextStyle(
+                            fontSize: 20.0,
+                          ),
                         ),
+                        padding: EdgeInsets.only(left: 10),
                       ),
-                      padding: EdgeInsets.only(left: 10),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              onPressed: () {},
-              elevation: 5,
-              color: Colors.white,
-              hoverColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(100)),
-                  side: BorderSide(color: Colors.amber, width: 3)),
-            )),
-        flex: 5,
-      ),
-      Expanded(
-        child: Container(
-          margin: EdgeInsets.all(20),
-          height: 70,
-          width: 70,
-          child: FloatingActionButton(
-            onPressed: () {},
-            child: Icon(Icons.add),
-            foregroundColor: Colors.white,
-            elevation: 5,
-          ),
+                onPressed: () {},
+                elevation: 5,
+                color: Colors.white,
+                hoverColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(100)),
+                    side: BorderSide(color: Colors.amber, width: 3)),
+              )),
+          flex: 5,
         ),
-        flex: 2,
-      )
-    ],
-  );
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.all(20),
+            height: 70,
+            width: 70,
+            child: FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => NewMed()),
+                );
+              },
+              child: Icon(Icons.add),
+              foregroundColor: Colors.white,
+              elevation: 5,
+            ),
+          ),
+          flex: 2,
+        )
+      ],
+    );
+  }
 }

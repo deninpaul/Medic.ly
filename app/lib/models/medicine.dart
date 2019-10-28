@@ -5,12 +5,12 @@ class Note {
   String _title;
   String _medName;
   String _description;
-  String _day;
+  List<String> _days;
   TimeOfDay _time;
 
-  Note(this._title, this._day, this._time, this._medName, this._description);
+  Note(this._title, this._days, this._time, this._medName, this._description);
 
-  Note.withId(this._id, this._title, this._time, this._day, this._medName,
+  Note.withId(this._id, this._title, this._time, this._days, this._medName,
       this._description);
 
   int get id => _id;
@@ -19,7 +19,7 @@ class Note {
 
   String get medName => _medName;
 
-  String get day => _day;
+  List<String> get days => _days;
 
   TimeOfDay get time => _time;
 
@@ -45,8 +45,8 @@ class Note {
     this._time = newtime;
   }
 
-  set day(String newDay) {
-    this._day = newDay;
+  set day(List<String> newDays) {
+    this._days = newDays;
   }
 
   // Convert a Note object into a Map object
@@ -58,7 +58,7 @@ class Note {
     map['title'] = _title;
     map['description'] = _description;
     map['medName'] = _medName;
-    map['day'] = _day;
+    map['days'] = _days;
     map['time'] = _time;
 
     return map;
@@ -69,7 +69,7 @@ class Note {
     this._id = map['id'];
     this._title = map['title'];
     this._description = map['description'];
-    this._day = map['day'];
+    this._days = map['days'];
     this._time = map['time'];
   }
 }
