@@ -3,25 +3,21 @@ import 'package:flutter/material.dart';
 class NewMed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'New Medicine Page',
-      theme: ThemeData(primarySwatch: Colors.amber, fontFamily: 'Montserrat'),
-      home: Scaffold(
-          appBar: AppBar(
-            title: Text(
-              "New Medicine",
-              style:
-                  TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
-            ),
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back_ios),
-              onPressed: () => Navigator.pop(context, false),
-              color: Colors.black,
-            ),
-            elevation: 10,
-            backgroundColor: Colors.white,
-          ),
-          body: NewMedPage()),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "New Medicine",
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+        ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () => Navigator.pop(context, false),
+          color: Colors.black,
+        ),
+        elevation: 10,
+        backgroundColor: Colors.white,
+      ),
+      body: NewMedPage(),
     );
   }
 }
@@ -191,8 +187,11 @@ class NewMedPageState extends State<NewMedPage> {
                               child: Text(
                                 "Change Time",
                                 style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w600),
+                                    fontSize: 16, fontWeight: FontWeight.w500),
                               ),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(30))),
                             ),
                             height: 50,
                             margin: EdgeInsets.only(left: 5),
@@ -201,7 +200,51 @@ class NewMedPageState extends State<NewMedPage> {
                       ],
                     )
                   ],
-                )))
+                ))),
+        Container(
+          margin: EdgeInsets.only(right: 20, bottom: 30, top: 10, left: 20),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Expanded(
+                child: Container(
+                  child: RaisedButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: Text(
+                      "Save",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                    ),
+                    elevation: 2,
+                    color: Colors.amber,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(30))),
+                  ),
+                  height: 50,
+                  padding: EdgeInsets.only(right: 20),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                    child: FlatButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.w600),
+                      ),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(100)),
+                          side: BorderSide(color: Colors.amber, width: 3)),
+                    ),
+                    height: 50,
+                    padding: EdgeInsets.only(right: 20)),
+              ),
+            ],
+          ),
+        )
       ],
     );
   }

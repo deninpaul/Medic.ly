@@ -86,22 +86,27 @@ ListView getListView() {
       Container(
         width: 150.0,
         color: Colors.red,
+        margin: EdgeInsets.only(right: 10),
       ),
       Container(
         width: 150.0,
         color: Colors.blue,
+        margin: EdgeInsets.only(right: 10),
       ),
       Container(
         width: 150.0,
         color: Colors.green,
+        margin: EdgeInsets.only(right: 10),
       ),
       Container(
         width: 150.0,
         color: Colors.yellow,
+        margin: EdgeInsets.only(right: 10),
       ),
       Container(
         width: 150.0,
         color: Colors.orange,
+        margin: EdgeInsets.only(right: 10),
       ),
     ],
   );
