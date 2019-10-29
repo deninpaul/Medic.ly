@@ -355,23 +355,23 @@ class NewMedPageState extends State<NewMedPage> {
   void save() async {
     moveToLastScreen();
 
-    List<String> selectedDays = ['\0','\0','\0','\0','\0','\0','\0'];
+    List<String> selectedDays = [];
     for (int i = 0; i < 7; i++) {
       if (daySelected[i]) selectedDays.add(day[i]);
     }
     
-    med.days = "${selectedDays[0]},${selectedDays[1]},${selectedDays[2]},${selectedDays[3]},${selectedDays[4]},${selectedDays[5]},${selectedDays[6]}";
-    
+    med.days = selectedDays.toString();    
 
     int result;
-    for (int i = 0; i < 7; i++) {
-      result = await helper.insertMed(med);
-    }
-    if (result != 0) {
-      debugPrint("Successfully added");
+    for (int i = 0; i < selectedDays.length; i++) {
+      result = await helper.insertNote(med, "${selectedDays[i]}");
+      if (result != 0) {
+      debugPrint("Successfully added to ${selectedDays[i]}");
     } else {
-      debugPrint("Add failed");
+      debugPrint("Add failed to ${selectedDays[i]}");
     }
+    }
+    
   }
 }
 

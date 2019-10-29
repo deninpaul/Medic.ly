@@ -1,10 +1,13 @@
+import 'dart:io';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:app/models/medicine.dart';
+import 'package:path_provider/path_provider.dart';
 
 class DatabaseHelper {
   static DatabaseHelper _databaseHelper;
-  static Database db;
+  static Database _database;
 
   DatabaseHelper._createInstance();
 
@@ -16,82 +19,63 @@ class DatabaseHelper {
   }
 
   Future<Database> get database async {
-    if (db == null) {
-      db = await initializeDatabase();
+    if (_database == null) {
+      _database = await initializeDatabase();
     }
-    return db;
+    return _database;
   }
 
   Future<Database> initializeDatabase() async {
     // Get the directory path for both Android and iOS to store database.
-    final database = openDatabase(
-      join(await getDatabasesPath(), 'medicine_database.db'),
-      onCreate: (db, version) => _oncreate,
-      version: 1,
-    );
-    return database;
+    Directory directory = await getApplicationDocumentsDirectory();
+    String path = directory.path + 'medicines.db';
+
+    // Open/create the database at a given path
+    var notesDatabase =
+        await openDatabase(path, version: 1, onCreate: _createDb);
+    return notesDatabase;
   }
 
-  void _oncreate(Database db, int newVersion) async {
-    // List<String> day = [
-    //   'sunday',
-    //   'monday',
-    //   'tuesday',
-    //   'wednesday',
-    //   'thursday',
-    //   'friday',
-    //   'saturday'
-    // ];
-    await db.execute(
-        'CREATE TABLE medicines(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, medName TEXT, days TEXT, time TEXT)');
+  void _createDb(Database db, int newVersion) async {
+    List<String> day = [
+      'sunday',
+      'monday',
+      'tuesday',
+      'wednesday',
+      'thursday',
+      'friday',
+      'saturday'
+    ];
+
+    for (int i = 0; i < 7; i++) {
+      await db.execute(
+          'CREATE TABLE ${day[i]}(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, medName TEXT, days TEXT, time TEXT)');
+    }
   }
 
-  Future<int> insertMed(Medicine med) async {
-    final Database db = await database;
-    var result = await db.insert(
-      'medicines',
-      med.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
+  Future<List<Map<String, dynamic>>> getNoteMapList(String day) async {
+    Database db = await this.database;
+
+    var result = await db.query('$day');
     return result;
   }
 
-  Future<List<Medicine>> medicines() async {
-    final Database db = await database;
-    final List<Map<String, dynamic>> maps = await db.query('medicines');
-    return List.generate(maps.length, (i) {
-      return Medicine(
-        id: maps[i]['id'],
-        title: maps[i]['title'],
-        medName: maps[i]['medName'],
-        days: maps[i]['days'],
-        time: maps[i]['time'],
-      );
-    });
-  }
-
-  Future<int> updateMed(Medicine med) async {
-    final db = await database;
-    var result = await db.update(
-      'medicines',
-      med.toMap(),
-      // Ensure that the Dog has a matching id.
-      where: "id = ?",
-      // Pass the Dog's id as a whereArg to prevent SQL injection.
-      whereArgs: [med.id],
-    );
+  Future<int> insertNote(Medicine med, String day) async {
+    Database db = await this.database;
+    var result = await db.insert('$day', med.toMap());
     return result;
   }
 
-  Future<int> deleteMed(int id) async {
-    final db = await database;
-    var result = await db.delete(
-      'medicines',
-      // Use a `where` clause to delete a specific dog.
-      where: "id = ?",
-      // Pass the Dog's id as a whereArg to prevent SQL injection.
-      whereArgs: [id],
-    );
+  Future<int> updateNote(Medicine med, String day) async {
+    var db = await this.database;
+    var result = await db
+        .update('$day', med.toMap(), where: 'id = ?', whereArgs: [med.id]);
+    return result;
+  }
+
+  Future<int> deleteNote(int id) async {
+    var db = await this.database;
+    int result = await db.rawDelete('DELETE FROM medicines WHERE id = $id');
     return result;
   }
 }
