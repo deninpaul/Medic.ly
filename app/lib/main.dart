@@ -1,10 +1,17 @@
+import 'package:app/models/medicine.dart';
 import 'package:app/ui/medlist.dart';
 import 'package:flutter/material.dart';
 import 'package:app/ui/home.dart';
 import 'package:app/ui/medlist.dart';
 import 'package:app/ui/newReminder.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  runApp(MyApp());
+}
+
+
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.

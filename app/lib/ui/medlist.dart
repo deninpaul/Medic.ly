@@ -66,11 +66,11 @@ Widget medThisDay(String dayofweek) {
           ),
         ),
         new Container(
-          margin: EdgeInsets.all(25),
+          margin: EdgeInsets.only(left:25, bottom: 25, top: 25),
           height: 150,
           child: Card(
             child: getListView(),
-            elevation: 30,
+            elevation: 10,
           ),
 
         ),

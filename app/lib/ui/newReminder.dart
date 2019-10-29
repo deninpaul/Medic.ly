@@ -1,40 +1,42 @@
+import 'package:app/utils/database_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:app/models/medicine.dart';
+import 'package:sqflite/sqflite.dart';
 
-class NewMed extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "New Medicine",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
-        ),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () => Navigator.pop(context, false),
-          color: Colors.black,
-        ),
-        elevation: 10,
-        backgroundColor: Colors.white,
-      ),
-      body: NewMedPage(),
-    );
-  }
-}
-
+//==============================================================================
 class NewMedPage extends StatefulWidget {
-  NewMedPage({Key key, this.title}) : super(key: key);
+  NewMedPage({Key key, this.title, this.med}) : super(key: key);
   final String title;
+  final Medicine med;
 
   @override
   NewMedPageState createState() => NewMedPageState();
 }
 
+//==============================================================================
 class NewMedPageState extends State<NewMedPage> {
   List<bool> daySelected = [false, false, false, false, false, false, false];
+  List<String> day = [
+    'sunday',
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday'
+  ];
   TimeOfDay _time = new TimeOfDay.now();
   bool iseveryday = true;
+  DatabaseHelper helper = DatabaseHelper();
+  Medicine med = new Medicine();
 
+  TextEditingController titleController = TextEditingController();
+  TextEditingController medNameController = TextEditingController();
+
+  void initState(){
+    super.initState();
+    med.time = "${_time.hour}:${_time.minute}";
+  }
   void _daySelector(int i) {
     setState(() {
       daySelected[i] = !daySelected[i];
@@ -58,6 +60,7 @@ class NewMedPageState extends State<NewMedPage> {
       print('Time Selected: ${_time.toString()}');
       setState(() {
         _time = picked;
+        med.time = "${_time.hour}:${_time.minute}";
       });
     }
   }
@@ -80,177 +83,297 @@ class NewMedPageState extends State<NewMedPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      scrollDirection: Axis.vertical,
-      children: <Widget>[
-        Container(
-          height: 30,
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(
+            "New Medicine",
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+          ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () => Navigator.pop(context, false),
+            color: Colors.black,
+          ),
+          elevation: 7,
+          backgroundColor: Colors.white,
         ),
-        textFieldCard("Medicine Name"),
-        textFieldCard("Treatment For"),
-        Card(
-            elevation: 5,
-            margin: EdgeInsets.only(left: 10, right: 10, bottom: 15),
-            child: Container(
-              padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
-              margin: EdgeInsets.all(10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  Text(
-                    "  Medicine Days",
-                    style: formTitle(),
-                    textAlign: TextAlign.left,
-                  ),
-                  Row(
+        body: ListView(
+          scrollDirection: Axis.vertical,
+          children: <Widget>[
+            Container(
+              height: 30,
+            ),
+            Card(
+                elevation: 5,
+                margin: EdgeInsets.only(left: 10, right: 10, bottom: 15),
+                child: Container(
+                  padding: EdgeInsets.all(20),
+                  margin: EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
                     children: <Widget>[
-                      Checkbox(
-                        value: everythingSelected(daySelected)
-                            ? iseveryday = iseveryday
-                            : iseveryday = false,
-                        onChanged: (bool value) {
-                          setState(() {
-                            for (int i = 0; i < daySelected.length; i++) {
-                              daySelected[i] = true;
-                            }
-                            if (iseveryday == true && value == false) {
-                              for (int i = 0; i < daySelected.length; i++) {
-                                daySelected[i] = false;
-                              }
-                            }
-                            iseveryday = value;
-                          });
-                        },
-                      ),
                       Text(
-                        "Everyday",
-                        style: TextStyle(
-                          fontSize: 17,
-                        ),
+                        "Medicine Name",
+                        style: formTitle(),
+                        textAlign: TextAlign.left,
+                      ),
+                      TextField(
+                        controller: medNameController,
+                        onChanged: (value) {
+                          debugPrint(
+                              'Something changed in med Name text field');
+                          updateMedName();
+                        },
+                        decoration: InputDecoration(
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.amber, width: 2)),
+                            contentPadding: EdgeInsets.all(10)),
+                        style: formBox(),
+                      ),
+                    ],
+                  ),
+                )),
+            Card(
+                elevation: 5,
+                margin: EdgeInsets.only(left: 10, right: 10, bottom: 15),
+                child: Container(
+                  padding: EdgeInsets.all(20),
+                  margin: EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Text(
+                        "Treatment For",
+                        style: formTitle(),
+                        textAlign: TextAlign.left,
+                      ),
+                      TextField(
+                        controller: titleController,
+                        onChanged: (value) {
+                          debugPrint(
+                              'Something Changed in treatment text field');
+                          updateTitle();
+                        },
+                        decoration: InputDecoration(
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.amber, width: 2)),
+                            contentPadding: EdgeInsets.all(10)),
+                        style: formBox(),
+                      ),
+                    ],
+                  ),
+                )),
+            Card(
+                elevation: 5,
+                margin: EdgeInsets.only(left: 10, right: 10, bottom: 15),
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                  margin: EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Text(
+                        "  Medicine Days",
+                        style: formTitle(),
+                        textAlign: TextAlign.left,
+                      ),
+                      Row(
+                        children: <Widget>[
+                          Checkbox(
+                            value: everythingSelected(daySelected)
+                                ? iseveryday = iseveryday
+                                : iseveryday = false,
+                            onChanged: (bool value) {
+                              setState(() {
+                                for (int i = 0; i < daySelected.length; i++) {
+                                  daySelected[i] = true;
+                                }
+                                if (iseveryday == true && value == false) {
+                                  for (int i = 0; i < daySelected.length; i++) {
+                                    daySelected[i] = false;
+                                  }
+                                }
+                                iseveryday = value;
+                              });
+                            },
+                          ),
+                          Text(
+                            "Everyday",
+                            style: TextStyle(
+                              fontSize: 17,
+                            ),
+                          )
+                        ],
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          dayFlatButton("S", 0),
+                          dayFlatButton("M", 1),
+                          dayFlatButton("T", 2),
+                          dayFlatButton("W", 3),
+                          dayFlatButton("T", 4),
+                          dayFlatButton("F", 5),
+                          dayFlatButton("S", 6),
+                        ],
                       )
                     ],
                   ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      dayFlatButton("S", 0),
-                      dayFlatButton("M", 1),
-                      dayFlatButton("T", 2),
-                      dayFlatButton("W", 3),
-                      dayFlatButton("T", 4),
-                      dayFlatButton("F", 5),
-                      dayFlatButton("S", 6),
-                    ],
-                  )
-                ],
-              ),
-            )),
-        Card(
-            elevation: 5,
-            margin: EdgeInsets.only(left: 10, right: 10, bottom: 15),
-            child: Container(
-                padding: EdgeInsets.all(20),
-                margin: EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Text(
-                      "Time",
-                      style: formTitle(),
-                      textAlign: TextAlign.left,
-                    ),
-                    Row(
+                )),
+            Card(
+                elevation: 5,
+                margin: EdgeInsets.only(left: 10, right: 10, bottom: 15),
+                child: Container(
+                    padding: EdgeInsets.all(20),
+                    margin: EdgeInsets.all(10),
+                    child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       mainAxisSize: MainAxisSize.max,
                       children: <Widget>[
-                        Expanded(
-                          child: Text(
-                              _time.hour > 12
-                                  ? '${_time.hour - 12}:${_time.minute}pm'
-                                  : '${_time.hour}:${_time.minute}am',
-                              style: TextStyle(
-                                  fontSize: 36, fontWeight: FontWeight.w700)),
+                        Text(
+                          "Time",
+                          style: formTitle(),
+                          textAlign: TextAlign.left,
                         ),
-                        Expanded(
-                          child: Container(
-                            child: RaisedButton(
-                              onPressed: () => selectTime(context),
-                              color: Colors.amber,
-                              elevation: 3,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          children: <Widget>[
+                            Expanded(
                               child: Text(
-                                "Change Time",
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w500),
-                              ),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(30))),
+                                  _time.hour > 12
+                                      ? '${_time.hour - 12}:${_time.minute}pm'
+                                      : '${_time.hour}:${_time.minute}am',
+                                  style: TextStyle(
+                                      fontSize: 36,
+                                      fontWeight: FontWeight.w700)),
                             ),
-                            height: 50,
-                            margin: EdgeInsets.only(left: 5),
-                          ),
+                            Expanded(
+                              child: Container(
+                                child: RaisedButton(
+                                  onPressed: () => selectTime(context),
+                                  color: Colors.amber,
+                                  elevation: 3,
+                                  child: Text(
+                                    "Change Time",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(30))),
+                                ),
+                                height: 50,
+                                margin: EdgeInsets.only(left: 5),
+                              ),
+                            )
+                          ],
                         )
                       ],
-                    )
-                  ],
-                ))),
-        Container(
-          margin: EdgeInsets.only(right: 20, bottom: 30, top: 10, left: 20),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Expanded(
-                child: Container(
-                  child: RaisedButton(
-                    onPressed: () => Navigator.pop(context, false),
-                    child: Text(
-                      "Save",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                    elevation: 2,
-                    color: Colors.amber,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(30))),
-                  ),
-                  height: 50,
-                  padding: EdgeInsets.only(right: 20),
-                ),
-              ),
-              Expanded(
-                child: Container(
-                    child: FlatButton(
-                      onPressed: () => Navigator.pop(context, false),
-                      child: Text(
-                        "Cancel",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w600),
+                    ))),
+            Container(
+              margin: EdgeInsets.only(right: 20, bottom: 30, top: 10, left: 20),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      child: RaisedButton(
+                        onPressed: () {
+                          setState(() {
+                            debugPrint("Save button clicked");
+                            save();
+                          });
+                        },
+                        child: Text(
+                          "Save",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w600),
+                        ),
+                        elevation: 2,
+                        color: Colors.amber,
+                        shape: RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(30))),
                       ),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(100)),
-                          side: BorderSide(color: Colors.amber, width: 3)),
+                      height: 50,
+                      padding: EdgeInsets.only(right: 20),
                     ),
-                    height: 50,
-                    padding: EdgeInsets.only(right: 20)),
+                  ),
+                  Expanded(
+                    child: Container(
+                        child: FlatButton(
+                          onPressed: () => moveToLastScreen(),
+                          child: Text(
+                            "Cancel",
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w600),
+                          ),
+                          shape: RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100)),
+                              side: BorderSide(color: Colors.amber, width: 3)),
+                        ),
+                        height: 50,
+                        padding: EdgeInsets.only(right: 20)),
+                  ),
+                ],
               ),
-            ],
-          ),
-        )
-      ],
-    );
+            )
+          ],
+        ));
+  }
+
+  void updateTitle() {
+    med.title = titleController.text;
+  }
+
+  // Update the description of Note object
+  void updateMedName() {
+    med.medName = medNameController.text;
+  }
+
+  void moveToLastScreen() {
+    Navigator.pop(context, true);
+  }
+
+  void save() async {
+    moveToLastScreen();
+
+    List<String> selectedDays = ['\0','\0','\0','\0','\0','\0','\0'];
+    for (int i = 0; i < 7; i++) {
+      if (daySelected[i]) selectedDays.add(day[i]);
+    }
+    
+    med.days = "${selectedDays[0]},${selectedDays[1]},${selectedDays[2]},${selectedDays[3]},${selectedDays[4]},${selectedDays[5]},${selectedDays[6]}";
+    
+
+    int result;
+    for (int i = 0; i < 7; i++) {
+      result = await helper.insertMed(med);
+    }
+    if (result != 0) {
+      debugPrint("Successfully added");
+    } else {
+      debugPrint("Add failed");
+    }
   }
 }
-
-class DaySelector {}
 
 TextStyle formTitle() {
   return TextStyle(
@@ -260,33 +383,4 @@ TextStyle formTitle() {
 TextStyle formBox() {
   return TextStyle(
       fontSize: 26, color: Colors.black, fontWeight: FontWeight.w500);
-}
-
-Card textFieldCard(String fieldName) {
-  return Card(
-      elevation: 5,
-      margin: EdgeInsets.only(left: 10, right: 10, bottom: 15),
-      child: Container(
-        padding: EdgeInsets.all(20),
-        margin: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Text(
-              fieldName,
-              style: formTitle(),
-              textAlign: TextAlign.left,
-            ),
-            TextField(
-              decoration: InputDecoration(
-                  focusedBorder: UnderlineInputBorder(
-                      borderSide: BorderSide(color: Colors.amber, width: 2)),
-                  contentPadding: EdgeInsets.all(10)),
-              style: formBox(),
-            ),
-          ],
-        ),
-      ));
 }

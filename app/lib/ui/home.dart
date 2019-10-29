@@ -112,7 +112,7 @@ class BottomFABs extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {},
-                elevation: 5,
+                elevation: 10,
                 color: Colors.white,
                 hoverColor: Colors.white,
                 shape: RoundedRectangleBorder(
@@ -130,12 +130,12 @@ class BottomFABs extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => NewMed()),
+                  MaterialPageRoute(builder: (context) => NewMedPage()),
                 );
               },
               child: Icon(Icons.add),
               foregroundColor: Colors.white,
-              elevation: 5,
+              elevation: 10,
             ),
           ),
           flex: 2,
