@@ -68,7 +68,7 @@ class BottomDrawer extends StatelessWidget {
               children: <Widget>[
                 Container(height: 20),
                 new Container(
-                  child: medThisDay("Todays"),
+                  child: medToday("Todays"),
                   padding: EdgeInsets.all(0.0),
                 ),
               ],
@@ -143,4 +143,66 @@ class BottomFABs extends StatelessWidget {
       ],
     );
   }
+}
+
+Widget medToday(String dayofweek){
+  return Container(
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: <Widget>[
+        Container(
+          width: 330,
+          child: Text(
+            "$dayofweek",
+            style: TextStyle(
+              fontSize: 25,
+              fontWeight: FontWeight.w700,
+            ),
+            textAlign: TextAlign.left,
+          ),
+        ),
+        new Container(
+          margin: EdgeInsets.only(left:25, bottom: 25, top: 25),
+          height: 150,
+          child: Card(
+            child: todayMedListView(),
+            elevation: 10,
+          ),
+
+        )]));
+}
+
+Widget todayMedListView() {
+  return ListView(
+    scrollDirection: Axis.horizontal,
+    children: <Widget>[
+      Container(
+        width: 150.0,
+        color: Colors.red,
+        margin: EdgeInsets.only(right: 10),
+      ),
+      Container(
+        width: 150.0,
+        color: Colors.blue,
+        margin: EdgeInsets.only(right: 10),
+      ),
+      Container(
+        width: 150.0,
+        color: Colors.green,
+        margin: EdgeInsets.only(right: 10),
+      ),
+      Container(
+        width: 150.0,
+        color: Colors.yellow,
+        margin: EdgeInsets.only(right: 10),
+      ),
+      Container(
+        width: 150.0,
+        color: Colors.orange,
+        margin: EdgeInsets.only(right: 10),
+      ),
+    ],
+  );
 }

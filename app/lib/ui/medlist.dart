@@ -1,6 +1,9 @@
 import 'package:app/main.dart';
 import 'package:app/ui/home.dart';
 import 'package:flutter/material.dart';
+import 'package:app/utils/database_helper.dart';
+import 'package:app/models/medicine.dart';
+import 'package:sqflite/sqflite.dart';
 
 class MedList extends StatelessWidget {
   @override
@@ -28,26 +31,65 @@ class MedListPage extends StatefulWidget {
 }
 
 class ListMedByDay extends State<MedListPage> {
+  
+  DatabaseHelper databaseHelper =DatabaseHelper();
+  List<Medicine> sunList, monList, tueList, wedList, thuList, friList, satList;
+  
   @override
   Widget build(BuildContext context) {
+    if(sunList == null){
+      sunList= List<Medicine>();
+      updateListView("sunday", sunList);
+    }
+
+    if(monList == null){
+      monList= List<Medicine>();
+      updateListView("monday", monList);
+    }
+
+    if(tueList == null){
+      tueList= List<Medicine>();
+      updateListView("tuesday", tueList);
+    }
+
+    if(wedList == null){
+      wedList= List<Medicine>();
+      updateListView("wednesday", wedList);
+    }
+
+    if(thuList == null){
+      thuList= List<Medicine>();
+      updateListView("thursday", thuList);
+    }
+
+    if(friList == null){
+      friList= List<Medicine>();
+      updateListView("friday", friList);
+    }
+
+    if(satList == null){
+      satList= List<Medicine>();
+      updateListView("saturday", satList);
+    }
+    
     return ListView(
       children: <Widget>[
-        medThisDay("Sunday"),
-        medThisDay("Monday"),
-        medThisDay("Tuesday"),
-        medThisDay("Wednesday"),
-        medThisDay("Thursday"),
-        medThisDay("Friday"),
-        medThisDay("Saturday"),
+        medThisDay("Sunday", sunList),
+        medThisDay("Monday", monList),
+        medThisDay("Tuesday", tueList),
+        medThisDay("Wednesday", wedList),
+        medThisDay("Thursday", thuList),
+        medThisDay("Friday", friList),
+        medThisDay("Saturday", satList),
         Container(
           height: 100,
         ),
       ],
     );
   }
-}
 
-Widget medThisDay(String dayofweek) {
+
+Widget medThisDay(String dayofweek, List<Medicine> daylist) {
   return Container(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -69,45 +111,60 @@ Widget medThisDay(String dayofweek) {
           margin: EdgeInsets.only(left:25, bottom: 25, top: 25),
           height: 150,
           child: Card(
-            child: getListView(),
-            elevation: 10,
+            child: getMedListView(daylist),
+            elevation: 3,
           ),
 
         ),
       ],
     ),
   );
+} 
+  ListView getMedListView(List<Medicine> daylist) {
+  return ListView.builder(
+    scrollDirection: Axis.horizontal,
+    itemCount: daylist.length,
+    itemBuilder: (context, int position){
+      return Card(
+        color: Colors.white,
+        elevation: 5,
+        child: Container(
+          width: 150,
+          height: 150,
+          padding: EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Container(
+                height: 80,
+                width: 80,
+                child: Icon(Icons.remove_circle),
+              ),
+              Text(daylist[position].title, style:TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.black) ),
+              Text(daylist[position].title, style:TextStyle(fontSize: 14, fontWeight: FontWeight.w800))
+            ],
+          )
+        ),
+        );
+    },
+  );
 }
 
-ListView getListView() {
-  return ListView(
-    scrollDirection: Axis.horizontal,
-    children: <Widget>[
-      Container(
-        width: 150.0,
-        color: Colors.red,
-        margin: EdgeInsets.only(right: 10),
-      ),
-      Container(
-        width: 150.0,
-        color: Colors.blue,
-        margin: EdgeInsets.only(right: 10),
-      ),
-      Container(
-        width: 150.0,
-        color: Colors.green,
-        margin: EdgeInsets.only(right: 10),
-      ),
-      Container(
-        width: 150.0,
-        color: Colors.yellow,
-        margin: EdgeInsets.only(right: 10),
-      ),
-      Container(
-        width: 150.0,
-        color: Colors.orange,
-        margin: EdgeInsets.only(right: 10),
-      ),
-    ],
-  );
+void updateListView(String day, List<Medicine> daylist) {
+
+		final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+		dbFuture.then((database) {
+
+			Future<List<Medicine>> noteListFuture = databaseHelper.getNoteList(day);
+			noteListFuture.then((noteList) {
+				setState(() {
+				  daylist = noteList;
+          debugPrint("${daylist.length}");
+				});
+			});
+		});
+  }
+
 }

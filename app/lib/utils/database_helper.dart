@@ -78,4 +78,28 @@ class DatabaseHelper {
     int result = await db.rawDelete('DELETE FROM medicines WHERE id = $id');
     return result;
   }
+
+  Future<int> getCount(String day) async {
+    Database db = await this.database;
+    List<Map<String, dynamic>> x =
+        await db.rawQuery('SELECT COUNT (*) from $day');
+    int result = Sqflite.firstIntValue(x);
+    return result;
+  }
+
+  // Get the 'Map List' [ List<Map> ] and convert it to 'Note List' [ List<Note> ]
+  Future<List<Medicine>> getNoteList(String day) async {
+    var medicineMapList =
+        await getNoteMapList(day); // Get 'Map List' from database
+    int count =
+        medicineMapList.length; // Count the number of map entries in db table
+
+    List<Medicine> medicineList = List<Medicine>();
+    // For loop to create a 'Note List' from a 'Map List'
+    for (int i = 0; i < count; i++) {
+      medicineList.add(Medicine.fromMapObject(medicineMapList[i]));
+    }
+
+    return medicineList;
+  }
 }
