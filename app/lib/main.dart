@@ -12,7 +12,7 @@ void main() async {
 }
 
 
-
+PageController globalcontroller;
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -34,7 +34,7 @@ class MyHomePage extends StatefulWidget {
 
 class MyHomePageState extends State<MyHomePage> {
   Color _appBarColor = Colors.amber;
-  PageController _controller = PageController(initialPage: 0);
+  PageController controller = PageController(initialPage: 0);
 
   void onPageChanged(int page) {
     Color _tempColor;
@@ -52,10 +52,10 @@ class MyHomePageState extends State<MyHomePage> {
   }
 
   bool onWillPop() {
-    if (_controller.page.round() == _controller.initialPage) {
+    if (globalcontroller.page.round() == globalcontroller.initialPage) {
       return true;
     } else {
-      _controller.previousPage(
+      globalcontroller.previousPage(
         duration: Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
@@ -65,6 +65,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    globalcontroller = controller;
     return new MaterialApp(
         title: 'Home',
         theme: ThemeData(primarySwatch: Colors.amber, fontFamily: 'Montserrat'),
@@ -78,14 +79,14 @@ class MyHomePageState extends State<MyHomePage> {
             NextMed(),
             PageView(
               children: <Widget>[
-                new BottomDrawer(),
+                BottomDrawer(),
                 //MedList()
                 WillPopScope(
                     onWillPop: () => Future.sync(onWillPop), child: MedList()),
               ],
               scrollDirection: Axis.vertical,
               onPageChanged: onPageChanged,
-              controller: _controller,
+              controller: globalcontroller,
             ),
             Align(
               alignment: Alignment.bottomCenter,
@@ -94,4 +95,31 @@ class MyHomePageState extends State<MyHomePage> {
           ]),
         ));
   }
+}
+
+  String timeDisplay(String timegiven){
+    var timesplitted = timegiven.split(':');
+    if(int.parse(timesplitted[0])>12){
+      if(int.parse(timesplitted[1])<10){
+        return "${int.parse(timesplitted[0]) -12}:0${int.parse(timesplitted[1])}pm";
+      }
+      else{
+        return "${int.parse(timesplitted[0]) -12}:${int.parse(timesplitted[1])}pm";
+      }
+    }
+    else{
+      if(int.parse(timesplitted[1])<10){
+        return "${int.parse(timesplitted[0])}:0${int.parse(timesplitted[1])}am";
+      }
+      else{
+        return "${int.parse(timesplitted[0])}:${int.parse(timesplitted[1])}am";
+      }
+    }
+  }
+  
+
+void pageChanger(){
+  globalcontroller.previousPage(
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut);
 }

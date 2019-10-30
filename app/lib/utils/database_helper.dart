@@ -56,14 +56,14 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getNoteMapList(String day) async {
     Database db = await this.database;
 
-    var result = await db.query('$day');
+    var result = await db.query('$day', orderBy: 'time ASC');
     return result;
   }
 
   Future<int> insertNote(Medicine med, String day) async {
     Database db = await this.database;
-    var result = await db.insert('$day', med.toMap());
-    return result;
+    var result = await db.insert('$day', med.toMap()); 
+    return result; 
   }
 
   Future<int> updateNote(Medicine med, String day) async {

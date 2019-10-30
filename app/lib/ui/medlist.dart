@@ -31,47 +31,13 @@ class MedListPage extends StatefulWidget {
 }
 
 class ListMedByDay extends State<MedListPage> {
-  
-  DatabaseHelper databaseHelper =DatabaseHelper();
+  DatabaseHelper databaseHelper = DatabaseHelper();
   List<Medicine> sunList, monList, tueList, wedList, thuList, friList, satList;
-  
+
   @override
   Widget build(BuildContext context) {
-    if(sunList == null){
-      sunList= List<Medicine>();
-      updateListView("sunday", sunList);
-    }
+    updateListView();
 
-    if(monList == null){
-      monList= List<Medicine>();
-      updateListView("monday", monList);
-    }
-
-    if(tueList == null){
-      tueList= List<Medicine>();
-      updateListView("tuesday", tueList);
-    }
-
-    if(wedList == null){
-      wedList= List<Medicine>();
-      updateListView("wednesday", wedList);
-    }
-
-    if(thuList == null){
-      thuList= List<Medicine>();
-      updateListView("thursday", thuList);
-    }
-
-    if(friList == null){
-      friList= List<Medicine>();
-      updateListView("friday", friList);
-    }
-
-    if(satList == null){
-      satList= List<Medicine>();
-      updateListView("saturday", satList);
-    }
-    
     return ListView(
       children: <Widget>[
         medThisDay("Sunday", sunList),
@@ -88,6 +54,106 @@ class ListMedByDay extends State<MedListPage> {
     );
   }
 
+  void updateListView() {
+    if (sunList == null) {
+      sunList = List<Medicine>();
+      final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+      dbFuture.then((database) {
+        Future<List<Medicine>> noteListFuture =
+            databaseHelper.getNoteList('sunday');
+        noteListFuture.then((noteList) {
+          setState(() {
+            this.sunList = noteList;
+          });
+        });
+      });
+    }
+
+    if (monList == null) {
+      monList = List<Medicine>();
+      final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+      dbFuture.then((database) {
+        Future<List<Medicine>> noteListFuture =
+            databaseHelper.getNoteList('monday');
+        noteListFuture.then((noteList) {
+          setState(() {
+            this.monList = noteList;
+          });
+        });
+      });
+    }
+
+    if (tueList == null) {
+      tueList = List<Medicine>();
+      final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+      dbFuture.then((database) {
+        Future<List<Medicine>> noteListFuture =
+            databaseHelper.getNoteList('tuesday');
+        noteListFuture.then((noteList) {
+          setState(() {
+            this.tueList = noteList;
+          });
+        });
+      });
+    }
+
+    if (wedList == null) {
+      wedList = List<Medicine>();
+      final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+      dbFuture.then((database) {
+        Future<List<Medicine>> noteListFuture =
+            databaseHelper.getNoteList('wednesday');
+        noteListFuture.then((noteList) {
+          setState(() {
+            this.wedList = noteList;
+          });
+        });
+      });
+    }
+
+    if (thuList == null) {
+      thuList = List<Medicine>();
+      final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+      dbFuture.then((database) {
+        Future<List<Medicine>> noteListFuture =
+            databaseHelper.getNoteList('thursday');
+        noteListFuture.then((noteList) {
+          setState(() {
+            this.thuList = noteList;
+          });
+        });
+      });
+    }
+
+    if (friList == null) {
+      friList = List<Medicine>();
+      final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+      dbFuture.then((database) {
+        Future<List<Medicine>> noteListFuture =
+            databaseHelper.getNoteList('friday');
+        noteListFuture.then((noteList) {
+          setState(() {
+            this.friList = noteList;
+          });
+        });
+      });
+    }
+
+    if (satList == null) {
+      satList = List<Medicine>();
+      final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+      dbFuture.then((database) {
+        Future<List<Medicine>> noteListFuture =
+            databaseHelper.getNoteList('saturday');
+        noteListFuture.then((noteList) {
+          setState(() {
+            this.satList = noteList;
+          });
+        });
+      });
+    }
+  }
+}
 
 Widget medThisDay(String dayofweek, List<Medicine> daylist) {
   return Container(
@@ -108,63 +174,76 @@ Widget medThisDay(String dayofweek, List<Medicine> daylist) {
           ),
         ),
         new Container(
-          margin: EdgeInsets.only(left:25, bottom: 25, top: 25),
-          height: 150,
+          margin: EdgeInsets.only(left: 5, right: 5, bottom: 10, top: 10),
+          height: 180,
           child: Card(
             child: getMedListView(daylist),
-            elevation: 3,
+            elevation: 0,
           ),
-
         ),
       ],
     ),
   );
-} 
-  ListView getMedListView(List<Medicine> daylist) {
+}
+
+ListView getMedListView(List<Medicine> daylist) {
   return ListView.builder(
     scrollDirection: Axis.horizontal,
     itemCount: daylist.length,
-    itemBuilder: (context, int position){
-      return Card(
-        color: Colors.white,
-        elevation: 5,
-        child: Container(
-          width: 150,
-          height: 150,
-          padding: EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Container(
-                height: 80,
-                width: 80,
-                child: Icon(Icons.remove_circle),
-              ),
-              Text(daylist[position].title, style:TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.black) ),
-              Text(daylist[position].title, style:TextStyle(fontSize: 14, fontWeight: FontWeight.w800))
-            ],
-          )
+    itemBuilder: (context, int position) {
+      return Container(
+        padding: EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 5),
+        child: RaisedButton(
+          color: Colors.white,
+          elevation: 5,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(10))),
+          onPressed: () {},
+          child: Container(
+              width: 110,
+              height: 150,
+              padding: EdgeInsets.only(bottom: 5, top: 5),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                          boxShadow: [
+                            new BoxShadow(
+                                color: Colors.black38,
+                                blurRadius: 5,
+                                offset: Offset(0, 2))
+                          ]),
+                    ),
+                    flex: 10,
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Container(),
+                  ),
+                  Expanded(
+                    child: Text(timeDisplay(daylist[position].time),
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.w700)),
+                    flex: 3,
+                  ),
+                  Expanded(
+                    child: Text(daylist[position].title,
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black)),
+                    flex: 3,
+                  ),
+                ],
+              )),
         ),
-        );
+      );
     },
   );
-}
-
-void updateListView(String day, List<Medicine> daylist) {
-
-		final Future<Database> dbFuture = databaseHelper.initializeDatabase();
-		dbFuture.then((database) {
-
-			Future<List<Medicine>> noteListFuture = databaseHelper.getNoteList(day);
-			noteListFuture.then((noteList) {
-				setState(() {
-				  daylist = noteList;
-          debugPrint("${daylist.length}");
-				});
-			});
-		});
-  }
-
 }

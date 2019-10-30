@@ -1,7 +1,9 @@
+import 'package:app/main.dart';
 import 'package:app/utils/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:app/models/medicine.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:app/ui/medlist.dart';
 
 //==============================================================================
 class NewMedPage extends StatefulWidget {
@@ -33,10 +35,11 @@ class NewMedPageState extends State<NewMedPage> {
   TextEditingController titleController = TextEditingController();
   TextEditingController medNameController = TextEditingController();
 
-  void initState(){
+  void initState() {
     super.initState();
     med.time = "${_time.hour}:${_time.minute}";
   }
+
   void _daySelector(int i) {
     setState(() {
       daySelected[i] = !daySelected[i];
@@ -254,8 +257,12 @@ class NewMedPageState extends State<NewMedPage> {
                             Expanded(
                               child: Text(
                                   _time.hour > 12
-                                      ? '${_time.hour - 12}:${_time.minute}pm'
-                                      : '${_time.hour}:${_time.minute}am',
+                                      ? (_time.minute < 10
+                                          ? '${_time.hour - 12}:0${_time.minute}pm'
+                                          : '${_time.hour - 12}:${_time.minute}pm')
+                                      : (_time.minute < 10
+                                          ? '${_time.hour}:0${_time.minute}am'
+                                          : '${_time.hour}:${_time.minute}am'),
                                   style: TextStyle(
                                       fontSize: 36,
                                       fontWeight: FontWeight.w700)),
@@ -349,31 +356,34 @@ class NewMedPageState extends State<NewMedPage> {
   }
 
   void moveToLastScreen() {
-    Navigator.pop(context, true);
+     Navigator.pop(context, true);
+     pageChanger();
   }
 
   void save() async {
     moveToLastScreen();
+    ListMedByDay().updateListView();
 
     List<String> selectedDays = [];
     for (int i = 0; i < 7; i++) {
       if (daySelected[i]) selectedDays.add(day[i]);
     }
-    
-    med.days = selectedDays.toString();    
+
+    med.days = selectedDays.toString();
 
     int result;
     for (int i = 0; i < selectedDays.length; i++) {
       result = await helper.insertNote(med, "${selectedDays[i]}");
       if (result != 0) {
-      debugPrint("Successfully added to ${selectedDays[i]}");
-    } else {
-      debugPrint("Add failed to ${selectedDays[i]}");
+        debugPrint("Successfully added to ${selectedDays[i]}");
+      } else {
+        debugPrint("Add failed to ${selectedDays[i]}");
+      }
     }
-    }
-    
   }
 }
+
+
 
 TextStyle formTitle() {
   return TextStyle(

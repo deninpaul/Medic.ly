@@ -2,6 +2,10 @@ import 'package:app/ui/medlist.dart';
 import 'package:flutter/material.dart';
 import 'package:app/ui/medlist.dart';
 import 'package:app/ui/newReminder.dart';
+import 'package:app/utils/database_helper.dart';
+import 'package:app/models/medicine.dart';
+import 'package:intl/intl.dart';
+import 'package:sqflite/sqflite.dart';
 
 class NextMed extends StatelessWidget {
   @override
@@ -40,11 +44,33 @@ class NextMed extends StatelessWidget {
   }
 }
 
-class BottomDrawer extends StatelessWidget {
+class BottomDrawer extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return BottomDrawerState();
+  }
+  
+}
+
+class BottomDrawerState extends StatefulWidget {
+  BottomDrawerState({Key key, this.title}) : super(key: key);
+  final String title;
+
+  @override
+  ListMedToday createState() => ListMedToday();
+}
+
+
+class ListMedToday extends State<BottomDrawerState> {
+  DatabaseHelper databaseHelper = DatabaseHelper();
+  List<Medicine> todayList;
+  DateTime today = DateTime.now();
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
+    updateListView();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
@@ -68,13 +94,30 @@ class BottomDrawer extends StatelessWidget {
               children: <Widget>[
                 Container(height: 20),
                 new Container(
-                  child: medToday("Todays"),
+                  child: medThisDay("Todays", todayList),
                   padding: EdgeInsets.all(0.0),
                 ),
               ],
             )),
       ],
     );
+  }
+
+  void updateListView() {
+    if (todayList == null) {
+      todayList = List<Medicine>();
+      
+      final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+      dbFuture.then((database) {
+        Future<List<Medicine>> noteListFuture =
+            databaseHelper.getNoteList('${DateFormat('EEEE').format(today)}');
+        noteListFuture.then((noteList) {
+          setState(() {
+            this.todayList = noteList;
+          });
+        });
+      });
+    }
   }
 }
 
@@ -143,35 +186,6 @@ class BottomFABs extends StatelessWidget {
       ],
     );
   }
-}
-
-Widget medToday(String dayofweek){
-  return Container(
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: <Widget>[
-        Container(
-          width: 330,
-          child: Text(
-            "$dayofweek",
-            style: TextStyle(
-              fontSize: 25,
-              fontWeight: FontWeight.w700,
-            ),
-            textAlign: TextAlign.left,
-          ),
-        ),
-        new Container(
-          margin: EdgeInsets.only(left:25, bottom: 25, top: 25),
-          height: 150,
-          child: Card(
-            child: todayMedListView(),
-            elevation: 10,
-          ),
-
-        )]));
 }
 
 Widget todayMedListView() {
