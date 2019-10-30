@@ -44,12 +44,11 @@ class NextMed extends StatelessWidget {
   }
 }
 
-class BottomDrawer extends StatelessWidget{
+class BottomDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomDrawerState();
   }
-  
 }
 
 class BottomDrawerState extends StatefulWidget {
@@ -59,7 +58,6 @@ class BottomDrawerState extends StatefulWidget {
   @override
   ListMedToday createState() => ListMedToday();
 }
-
 
 class ListMedToday extends State<BottomDrawerState> {
   DatabaseHelper databaseHelper = DatabaseHelper();
@@ -106,7 +104,7 @@ class ListMedToday extends State<BottomDrawerState> {
   void updateListView() {
     if (todayList == null) {
       todayList = List<Medicine>();
-      
+
       final Future<Database> dbFuture = databaseHelper.initializeDatabase();
       dbFuture.then((database) {
         Future<List<Medicine>> noteListFuture =
@@ -186,37 +184,4 @@ class BottomFABs extends StatelessWidget {
       ],
     );
   }
-}
-
-Widget todayMedListView() {
-  return ListView(
-    scrollDirection: Axis.horizontal,
-    children: <Widget>[
-      Container(
-        width: 150.0,
-        color: Colors.red,
-        margin: EdgeInsets.only(right: 10),
-      ),
-      Container(
-        width: 150.0,
-        color: Colors.blue,
-        margin: EdgeInsets.only(right: 10),
-      ),
-      Container(
-        width: 150.0,
-        color: Colors.green,
-        margin: EdgeInsets.only(right: 10),
-      ),
-      Container(
-        width: 150.0,
-        color: Colors.yellow,
-        margin: EdgeInsets.only(right: 10),
-      ),
-      Container(
-        width: 150.0,
-        color: Colors.orange,
-        margin: EdgeInsets.only(right: 10),
-      ),
-    ],
-  );
 }

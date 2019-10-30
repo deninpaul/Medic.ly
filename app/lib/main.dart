@@ -1,18 +1,18 @@
-import 'package:app/models/medicine.dart';
+//import 'package:app/models/medicine.dart';
 import 'package:app/ui/medlist.dart';
 import 'package:flutter/material.dart';
 import 'package:app/ui/home.dart';
 import 'package:app/ui/medlist.dart';
-import 'package:app/ui/newReminder.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+//import 'package:app/ui/newReminder.dart';
+//import 'package:path/path.dart';
+//import 'package:sqflite/sqflite.dart';
 
 void main() async {
   runApp(MyApp());
 }
 
-
 PageController globalcontroller;
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -97,29 +97,26 @@ class MyHomePageState extends State<MyHomePage> {
   }
 }
 
-  String timeDisplay(String timegiven){
-    var timesplitted = timegiven.split(':');
-    if(int.parse(timesplitted[0])>12){
-      if(int.parse(timesplitted[1])<10){
-        return "${int.parse(timesplitted[0]) -12}:0${int.parse(timesplitted[1])}pm";
-      }
-      else{
-        return "${int.parse(timesplitted[0]) -12}:${int.parse(timesplitted[1])}pm";
-      }
+String timeDisplay(String timegiven) {
+  var timesplitted = timegiven.split(':');
+  if (int.parse(timesplitted[0]) > 12) {
+    if (int.parse(timesplitted[1]) < 10) {
+      return "${int.parse(timesplitted[0]) - 12}:0${int.parse(timesplitted[1])}pm";
+    } else {
+      return "${int.parse(timesplitted[0]) - 12}:${int.parse(timesplitted[1])}pm";
     }
-    else{
-      if(int.parse(timesplitted[1])<10){
-        return "${int.parse(timesplitted[0])}:0${int.parse(timesplitted[1])}am";
-      }
-      else{
-        return "${int.parse(timesplitted[0])}:${int.parse(timesplitted[1])}am";
-      }
+  } else {
+    if (int.parse(timesplitted[1]) < 10) {
+      return "${int.parse(timesplitted[0])}:0${int.parse(timesplitted[1])}am";
+    } else {
+      return "${int.parse(timesplitted[0])}:${int.parse(timesplitted[1])}am";
     }
   }
-  
+}
 
-void pageChanger(){
+void pageChanger() {
   globalcontroller.previousPage(
-        duration: Duration(milliseconds: 500),
-        curve: Curves.easeInOut);
+      duration: Duration(milliseconds: 1000), curve: Curves.easeInOut);
+  globalcontroller.nextPage(
+      duration: Duration(milliseconds: 500), curve: Curves.easeInOut);   
 }
