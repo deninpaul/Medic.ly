@@ -3,8 +3,8 @@ import 'package:app/utils/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:app/models/medicine.dart';
 //import 'package:sqflite/sqflite.dart';
-import 'package:app/ui/medlist.dart';
-import 'package:app/ui/home.dart';
+//import 'package:app/ui/medlist.dart';
+//import 'package:app/ui/home.dart';
 
 //==============================================================================
 class NewMedPage extends StatefulWidget {
@@ -64,7 +64,9 @@ class NewMedPageState extends State<NewMedPage> {
       print('Time Selected: ${_time.toString()}');
       setState(() {
         _time = picked;
-        med.time = (_time.hour<12)?"0${_time.hour}:${_time.minute}": "${_time.hour}:${_time.minute}";
+        med.time = (_time.hour < 12)
+            ? "0${_time.hour}:${_time.minute}"
+            : "${_time.hour}:${_time.minute}";
       });
     }
   }
@@ -75,7 +77,10 @@ class NewMedPageState extends State<NewMedPage> {
       child: FlatButton(
         onPressed: () => _daySelector(i),
         color: daySelected[i] ? Colors.amber : Colors.amber[100],
-        child: Text(dayname),
+        child: Text(
+          dayname,
+          style: TextStyle(fontFamily: 'Montserrat'),
+        ),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(30))),
       ),
@@ -91,7 +96,10 @@ class NewMedPageState extends State<NewMedPage> {
       appBar: AppBar(
         title: Text(
           "New Medicine",
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
+          style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.w600,
+              fontFamily: 'Montserrat'),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
@@ -263,7 +271,9 @@ class NewMedPageState extends State<NewMedPage> {
                                         ? '${_time.hour}:0${_time.minute}am'
                                         : '${_time.hour}:${_time.minute}am'),
                                 style: TextStyle(
-                                    fontSize: 36, fontWeight: FontWeight.w700)),
+                                    fontSize: 34,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: 'Montserrat')),
                           ),
                           Expanded(
                             child: Container(
@@ -275,7 +285,8 @@ class NewMedPageState extends State<NewMedPage> {
                                   "Change Time",
                                   style: TextStyle(
                                       fontSize: 16,
-                                      fontWeight: FontWeight.w500),
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: 'Montserrat'),
                                 ),
                                 shape: RoundedRectangleBorder(
                                     borderRadius:
@@ -308,7 +319,9 @@ class NewMedPageState extends State<NewMedPage> {
                       child: Text(
                         "Save",
                         style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w600),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            fontFamily: 'Montserrat'),
                       ),
                       elevation: 2,
                       color: Colors.amber,
@@ -326,7 +339,9 @@ class NewMedPageState extends State<NewMedPage> {
                         child: Text(
                           "Cancel",
                           style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w600),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Montserrat'),
                         ),
                         shape: RoundedRectangleBorder(
                             borderRadius:
@@ -340,7 +355,6 @@ class NewMedPageState extends State<NewMedPage> {
             ),
           ),
         ],
-        
       ),
     );
   }
@@ -356,11 +370,11 @@ class NewMedPageState extends State<NewMedPage> {
 
   void moveToLastScreen() {
     Navigator.pop(context, true);
-    pageChanger();
   }
 
   void save(BuildContext context) async {
     moveToLastScreen();
+    pageChanger(1);
 
     List<String> selectedDays = [];
     for (int i = 0; i < 7; i++) {
@@ -383,10 +397,16 @@ class NewMedPageState extends State<NewMedPage> {
 
 TextStyle formTitle() {
   return TextStyle(
-      fontSize: 18, color: Colors.black, fontWeight: FontWeight.w600);
+      fontSize: 18,
+      color: Colors.black,
+      fontWeight: FontWeight.w600,
+      fontFamily: 'Montserrat');
 }
 
 TextStyle formBox() {
   return TextStyle(
-      fontSize: 26, color: Colors.black, fontWeight: FontWeight.w500);
+      fontSize: 26,
+      color: Colors.black,
+      fontWeight: FontWeight.w500,
+      fontFamily: 'Montserrat');
 }

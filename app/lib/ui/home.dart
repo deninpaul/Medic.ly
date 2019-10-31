@@ -1,46 +1,176 @@
-import 'package:app/ui/medlist.dart';
 import 'package:flutter/material.dart';
-import 'package:app/ui/medlist.dart';
 import 'package:app/ui/newReminder.dart';
 import 'package:app/utils/database_helper.dart';
 import 'package:app/models/medicine.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:app/utils/functions.dart';
+//import 'package:app/ui/medlist.dart';
+//import 'package:app/ui/medlist.dart';
+
+class Medicines extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: <Widget>[
+          Container(
+            child: Text(
+              "Coming Soon :)",
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Montserrat'),
+            ),
+            alignment: AlignmentDirectional.center,
+            color: Colors.white,
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class Profile extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: <Widget>[
+          Container(
+            child: Text(
+              "Coming Soon :P",
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Montserrat'),
+            ),
+            alignment: AlignmentDirectional.center,
+            color: Colors.white,
+          )
+        ],
+      ),
+    );
+  }
+}
 
 class NextMed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    String nextMed = "Diabetes";
+    return NextMedState();
+  }
+}
 
+class NextMedState extends StatefulWidget {
+  NextMedState({Key key, this.title}) : super(key: key);
+  final String title;
+
+  @override
+  ShowNextMed createState() => ShowNextMed();
+}
+
+class ShowNextMed extends State<NextMedState> {
+  DatabaseHelper databaseHelper = DatabaseHelper();
+  List<Medicine> todayList;
+  DateTime today = DateTime.now();
+  Medicine nextMed;
+  String nexttitle = " ", nexttime = " ", nextmedName = " ";
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
+    updateListView();
     return Stack(children: <Widget>[
       Container(
         decoration: new BoxDecoration(
           color: Colors.amber,
         ),
       ),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          new Container(
-            child: Container(
+      Container(
+        height: size.height - 350,
+        color: Colors.amber,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
               child: Text(
-                nextMed,
+                "Next",
                 style: TextStyle(
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 25,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              padding: EdgeInsets.only(bottom: 10),
+              width: size.width,
+            ),
+            Container(
+                width: 160,
+                height: 160,
+                child: nexttitle != " "
+                    ? RaisedButton(
+                        elevation: 5,
+                        color: Colors.white,
+                        onPressed: () {},
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(100)),
+                        ),
+                      )
+                    : null),
+            Container(
+              child: Text(
+                nexttime == " " ? " " : timeDisplay(nexttime),
+                style: TextStyle(
+                  fontWeight: FontWeight.w700,
                   fontSize: 30,
                 ),
                 textAlign: TextAlign.center,
               ),
-              padding: EdgeInsets.all(50),
+              padding: EdgeInsets.only(top: 10, bottom: 0),
               width: size.width,
             ),
-          )
-        ],
+            Container(
+              child: Text(
+                nexttitle,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 25,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              padding: EdgeInsets.only(top: 0, bottom: 15),
+              width: size.width,
+            ),
+          ],
+        ),
       ),
     ]);
+  }
+
+  void updateListView() {
+    if (todayList == null) {
+      todayList = List<Medicine>();
+
+      final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+      dbFuture.then((database) {
+        Future<List<Medicine>> noteListFuture =
+            databaseHelper.getNoteList('${DateFormat('EEEE').format(today)}');
+        noteListFuture.then((noteList) {
+          setState(() {
+            this.todayList = noteList;
+            if (this.todayList != null) {
+              this.nextMed = this.todayList[0];
+              nextmedName = this.nextMed.medName;
+              nexttime = this.nextMed.time;
+              nexttitle = this.nextMed.title;
+            }
+          });
+        });
+      });
+    }
   }
 }
 
@@ -87,7 +217,7 @@ class ListMedToday extends State<BottomDrawerState> {
                   ),
                 ]),
             width: size.width,
-            height: 330.0,
+            height: 250.0,
             child: Column(
               children: <Widget>[
                 Container(height: 20),
@@ -97,6 +227,10 @@ class ListMedToday extends State<BottomDrawerState> {
                 ),
               ],
             )),
+        Container(
+          height: 20,
+          color: Colors.white,
+        )
       ],
     );
   }
@@ -119,69 +253,91 @@ class ListMedToday extends State<BottomDrawerState> {
   }
 }
 
-class BottomFABs extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Row(
+Widget appBarMenu(appcolor) {
+  return Container(
+    color: appcolor,
+    padding: EdgeInsets.only(top: 10),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      mainAxisSize: MainAxisSize.max,
+      mainAxisSize: MainAxisSize.min,
       children: <Widget>[
         Expanded(
           child: Container(
-              margin: EdgeInsets.fromLTRB(15, 10, 0, 10),
-              width: 200,
-              height: 70,
-              color: Colors.transparent,
-              child: RaisedButton(
-                child: Container(
-                  child: Stack(
-                    children: <Widget>[
-                      Container(
-                        child: TextField(
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Search',
-                              icon: Icon(Icons.search)),
-                          style: TextStyle(
-                            fontSize: 20.0,
-                          ),
-                        ),
-                        padding: EdgeInsets.only(left: 10),
-                      ),
-                    ],
-                  ),
-                ),
-                onPressed: () {},
-                elevation: 10,
-                color: Colors.white,
-                hoverColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(100)),
-                    side: BorderSide(color: Colors.amber, width: 3)),
-              )),
-          flex: 5,
+            padding: EdgeInsets.only(left: 5, right: 5),
+            child: Text(
+              "Meds",
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 20,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
         ),
         Expanded(
           child: Container(
-            margin: EdgeInsets.all(20),
-            height: 70,
-            width: 70,
-            child: FloatingActionButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => NewMedPage()),
-                );
-              },
-              child: Icon(Icons.add),
-              foregroundColor: Colors.white,
-              elevation: 10,
+            padding: EdgeInsets.only(left: 5, right: 5),
+            child: Text(
+              "Home",
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 20,
+              ),
+              textAlign: TextAlign.center,
             ),
           ),
-          flex: 2,
-        )
+        ),
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.only(left: 5, right: 5),
+            child: Text(
+              "Profile",
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                fontSize: 20,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ),
       ],
-    );
-  }
+    ),
+  );
+}
+
+Widget currentPageIndicator(double deviceWidth) {
+  return Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+    Container(
+      padding: EdgeInsets.only(left: 5, right: 5),
+      width: (deviceWidth - 10) / 3,
+      height: 10,
+      child: Card(
+        color: Colors.black,
+        elevation: 5,
+      ),
+    ),
+  ]);
+}
+
+Widget bottomFABs(BuildContext context) {
+  return Align(
+    alignment: AlignmentDirectional.bottomEnd,
+    child: Container(
+      margin: EdgeInsets.all(20),
+      height: 70,
+      width: 70,
+      child: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => NewMedPage()),
+          );
+        },
+        child: Icon(Icons.add),
+        foregroundColor: Colors.white,
+        elevation: 10,
+      ),
+    ),
+  );
 }

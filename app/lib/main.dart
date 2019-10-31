@@ -1,41 +1,47 @@
-//import 'package:app/models/medicine.dart';
+import 'package:app/models/medicine.dart';
 import 'package:app/ui/medlist.dart';
 import 'package:flutter/material.dart';
 import 'package:app/ui/home.dart';
 import 'package:app/ui/medlist.dart';
+import 'package:flutter/rendering.dart';
 //import 'package:app/ui/newReminder.dart';
 //import 'package:path/path.dart';
 //import 'package:sqflite/sqflite.dart';
+//import 'package:app/ui/newReminder.dart';
+//import 'package:app/models/medicine.dart';
 
 void main() async {
   runApp(MyApp());
 }
 
-PageController globalcontroller;
+PageController globalDrawercontroller = PageController(initialPage: 0);
+PageController globalMenucontroller = PageController(initialPage: 1);
+Color globalAppBarColor = Colors.amber;
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Home Page',
-      home: MyHomePage(),
-    );
+        title: 'Home Page',
+        home: PageView(
+          children: <Widget>[Medicines(), HomePage(), Profile()],
+          scrollDirection: Axis.horizontal,
+          controller: globalMenucontroller,
+        ));
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class HomePage extends StatefulWidget {
+  HomePage({Key key, this.title}) : super(key: key);
   final String title;
 
   @override
-  MyHomePageState createState() => MyHomePageState();
+  HomePageState createState() => HomePageState();
 }
 
-class MyHomePageState extends State<MyHomePage> {
-  Color _appBarColor = Colors.amber;
-  PageController controller = PageController(initialPage: 0);
-
+class HomePageState extends State<HomePage> {
+  
   void onPageChanged(int page) {
     Color _tempColor;
     switch (page) {
@@ -47,15 +53,16 @@ class MyHomePageState extends State<MyHomePage> {
         break;
     }
     setState(() {
-      this._appBarColor = _tempColor;
+      globalAppBarColor = _tempColor;
     });
   }
 
   bool onWillPop() {
-    if (globalcontroller.page.round() == globalcontroller.initialPage) {
+    if (globalDrawercontroller.page.round() ==
+        globalDrawercontroller.initialPage) {
       return true;
     } else {
-      globalcontroller.previousPage(
+      globalDrawercontroller.previousPage(
         duration: Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
@@ -65,58 +72,54 @@ class MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    globalcontroller = controller;
-    return new MaterialApp(
+    final size = MediaQuery.of(context).size;
+    return MaterialApp(
         title: 'Home',
         theme: ThemeData(primarySwatch: Colors.amber, fontFamily: 'Montserrat'),
         home: new Scaffold(
-          drawer: Drawer(),
-          appBar: new AppBar(
+          appBar: AppBar(
             elevation: 0,
-            backgroundColor: _appBarColor,
+            backgroundColor: globalAppBarColor,
+            title: Container(
+              height: 80,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(child: appBarMenu(globalAppBarColor)),
+                  currentPageIndicator(size.width),
+                ],
+              ),
+            ),
           ),
           body: Stack(children: <Widget>[
             NextMed(),
             PageView(
               children: <Widget>[
                 BottomDrawer(),
-                //MedList()
                 WillPopScope(
                     onWillPop: () => Future.sync(onWillPop), child: MedList()),
               ],
               scrollDirection: Axis.vertical,
               onPageChanged: onPageChanged,
-              controller: globalcontroller,
+              controller: globalDrawercontroller,
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: BottomFABs(),
-            )
+            bottomFABs(context),
           ]),
         ));
   }
-}
-
-String timeDisplay(String timegiven) {
-  var timesplitted = timegiven.split(':');
-  if (int.parse(timesplitted[0]) > 12) {
-    if (int.parse(timesplitted[1]) < 10) {
-      return "${int.parse(timesplitted[0]) - 12}:0${int.parse(timesplitted[1])}pm";
-    } else {
-      return "${int.parse(timesplitted[0]) - 12}:${int.parse(timesplitted[1])}pm";
-    }
-  } else {
-    if (int.parse(timesplitted[1]) < 10) {
-      return "${int.parse(timesplitted[0])}:0${int.parse(timesplitted[1])}am";
-    } else {
-      return "${int.parse(timesplitted[0])}:${int.parse(timesplitted[1])}am";
-    }
   }
-}
 
-void pageChanger() {
-  globalcontroller.previousPage(
+
+
+void pageChanger(int caseChecker) {
+  globalDrawercontroller.previousPage(
       duration: Duration(milliseconds: 1000), curve: Curves.easeInOut);
-  globalcontroller.nextPage(
-      duration: Duration(milliseconds: 500), curve: Curves.easeInOut);   
+  debugPrint("moved back");
+  if (caseChecker == 1) {
+    globalDrawercontroller.nextPage(
+        duration: Duration(milliseconds: 600), curve: Curves.easeInOut);
+    debugPrint("moved front");
+  }
 }
