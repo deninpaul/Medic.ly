@@ -96,8 +96,8 @@ class ShowNextMed extends State<NextMedState> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              child: Text(
-                "Next",
+              child:  Text(
+                nexttitle != " " ?"Next": " ",
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 25,
@@ -306,8 +306,8 @@ Widget appBarMenu(appcolor) {
   );
 }
 
-Widget currentPageIndicator(double deviceWidth) {
-  return Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+Widget currentPageIndicator(double deviceWidth, MainAxisAlignment lineAlign) {
+  return Row(mainAxisAlignment: lineAlign, children: <Widget>[
     Container(
       padding: EdgeInsets.only(left: 5, right: 5),
       width: (deviceWidth - 10) / 3,

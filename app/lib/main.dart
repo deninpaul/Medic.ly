@@ -1,4 +1,4 @@
-import 'package:app/models/medicine.dart';
+//import 'package:app/models/medicine.dart';
 import 'package:app/ui/medlist.dart';
 import 'package:flutter/material.dart';
 import 'package:app/ui/home.dart';
@@ -18,17 +18,79 @@ PageController globalDrawercontroller = PageController(initialPage: 0);
 PageController globalMenucontroller = PageController(initialPage: 1);
 Color globalAppBarColor = Colors.amber;
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home:MyAppState());
+  }
+  
+}
+
+class MyAppState extends StatefulWidget {
+  MyAppState({Key key, this.title}) : super(key: key);
+  final String title;
+
+  @override
+  MyAppBar createState() => MyAppBar();
+}
+
+class MyAppBar extends State<MyAppState> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(primarySwatch: Colors.amber, fontFamily: 'Montserrat'),
         title: 'Home Page',
-        home: PageView(
-          children: <Widget>[Medicines(), HomePage(), Profile()],
-          scrollDirection: Axis.horizontal,
-          controller: globalMenucontroller,
-        ));
+        home: DefaultTabController(
+            length: 3,
+            child: Scaffold(
+              appBar: AppBar(
+                elevation: 0,
+                backgroundColor: globalAppBarColor,
+                bottom: TabBar(
+                  tabs: [
+                    Tab(
+                      child: Text(
+                        "Meds",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 20,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Tab(
+                        child: Text(
+                      "Home",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
+                      ),
+                      textAlign: TextAlign.center
+                    )),
+                    Tab(
+                        child: Text(
+                      "Profile",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        fontSize: 20,
+                      ),
+                      textAlign: TextAlign.center,
+                    )),
+                  ],
+                  indicatorColor: Colors.black,
+                  indicatorWeight: 3,
+                ),
+              ),
+              body: TabBarView(
+                children: <Widget>[
+                  Medicines(),
+                  HomePage(),
+                  Profile(),
+                ],
+              ),
+            )));
   }
 }
 
@@ -40,9 +102,11 @@ class HomePage extends StatefulWidget {
   HomePageState createState() => HomePageState();
 }
 
-class HomePageState extends State<HomePage> {
-  
-  void onPageChanged(int page) {
+class HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
+  MainAxisAlignment menuIndicatorAlign = MainAxisAlignment.center;
+
+  void onDrawerPageChanged(int page) {
     Color _tempColor;
     switch (page) {
       case 0:
@@ -54,6 +118,24 @@ class HomePageState extends State<HomePage> {
     }
     setState(() {
       globalAppBarColor = _tempColor;
+    });
+  }
+
+  void onMenuPageChanged(int page) {
+    MainAxisAlignment _tempAlign;
+    switch (page) {
+      case 0:
+        _tempAlign = MainAxisAlignment.start;
+        break;
+      case 1:
+        _tempAlign = MainAxisAlignment.center;
+        break;
+      case 2:
+        _tempAlign = MainAxisAlignment.end;
+        break;
+    }
+    setState(() {
+      menuIndicatorAlign = _tempAlign;
     });
   }
 
@@ -77,41 +159,22 @@ class HomePageState extends State<HomePage> {
         title: 'Home',
         theme: ThemeData(primarySwatch: Colors.amber, fontFamily: 'Montserrat'),
         home: new Scaffold(
-          appBar: AppBar(
-            elevation: 0,
-            backgroundColor: globalAppBarColor,
-            title: Container(
-              height: 80,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(child: appBarMenu(globalAppBarColor)),
-                  currentPageIndicator(size.width),
-                ],
-              ),
-            ),
+            body: Stack(children: <Widget>[
+          NextMed(),
+          PageView(
+            children: <Widget>[
+              BottomDrawer(),
+              WillPopScope(
+                  onWillPop: () => Future.sync(onWillPop), child: MedList()),
+            ],
+            scrollDirection: Axis.vertical,
+            onPageChanged: onDrawerPageChanged,
+            controller: globalDrawercontroller,
           ),
-          body: Stack(children: <Widget>[
-            NextMed(),
-            PageView(
-              children: <Widget>[
-                BottomDrawer(),
-                WillPopScope(
-                    onWillPop: () => Future.sync(onWillPop), child: MedList()),
-              ],
-              scrollDirection: Axis.vertical,
-              onPageChanged: onPageChanged,
-              controller: globalDrawercontroller,
-            ),
-            bottomFABs(context),
-          ]),
-        ));
+          bottomFABs(context),
+        ])));
   }
-  }
-
-
+}
 
 void pageChanger(int caseChecker) {
   globalDrawercontroller.previousPage(
