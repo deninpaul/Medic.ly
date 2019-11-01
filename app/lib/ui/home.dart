@@ -8,28 +8,6 @@ import 'package:app/utils/functions.dart';
 //import 'package:app/ui/medlist.dart';
 //import 'package:app/ui/medlist.dart';
 
-class Medicines extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Container(
-            child: Text(
-              "Coming Soon :)",
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Montserrat'),
-            ),
-            alignment: AlignmentDirectional.center,
-            color: Colors.white,
-          )
-        ],
-      ),
-    );
-  }
-}
 
 class Profile extends StatelessWidget {
   @override
@@ -88,7 +66,7 @@ class ShowNextMed extends State<NextMedState> {
         ),
       ),
       Container(
-        height: size.height - 350,
+        height: size.height - 400,
         color: Colors.amber,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -217,7 +195,7 @@ class ListMedToday extends State<BottomDrawerState> {
                   ),
                 ]),
             width: size.width,
-            height: 250.0,
+            height: 270.0,
             child: Column(
               children: <Widget>[
                 Container(height: 20),
@@ -334,9 +312,9 @@ Widget bottomFABs(BuildContext context) {
             MaterialPageRoute(builder: (context) => NewMedPage()),
           );
         },
-        child: Icon(Icons.add),
+        child: Icon(Icons.add, size: 50,),
         foregroundColor: Colors.white,
-        elevation: 10,
+        elevation: 6,
       ),
     ),
   );

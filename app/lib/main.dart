@@ -1,9 +1,12 @@
 //import 'package:app/models/medicine.dart';
+import 'dart:convert';
+
 import 'package:app/ui/medlist.dart';
 import 'package:flutter/material.dart';
 import 'package:app/ui/home.dart';
 import 'package:app/ui/medlist.dart';
 import 'package:flutter/rendering.dart';
+import 'package:app/ui/showMedicine.dart';
 //import 'package:app/ui/newReminder.dart';
 //import 'package:path/path.dart';
 //import 'package:sqflite/sqflite.dart';
@@ -27,7 +30,7 @@ class MyApp extends StatelessWidget{
   
 }
 
-class MyAppState extends StatefulWidget {
+class MyAppState extends StatefulWidget{
   MyAppState({Key key, this.title}) : super(key: key);
   final String title;
 
@@ -35,8 +38,40 @@ class MyAppState extends StatefulWidget {
   MyAppBar createState() => MyAppBar();
 }
 
-class MyAppBar extends State<MyAppState> {
-  // This widget is the root of your application.
+class MyAppBar extends State<MyAppState>  with SingleTickerProviderStateMixin{
+  TabController tabcontroller;
+  GlobalKey<HomePageState> _keyChild1 = GlobalKey();
+  Color appbarcolor = Colors.amber;
+
+  @override
+  void initState(){
+    super.initState();
+    tabcontroller =  new TabController(length: 3, vsync: this, initialIndex: 1);
+    tabcontroller.addListener(_handleTabChange);
+    setState(() {
+    });
+  }
+
+
+  @override
+  void dispose(){
+    tabcontroller.dispose();
+    super.dispose();
+  }
+
+  _updateMyTitle(Color _tempcolor){
+    setState(() {
+      appbarcolor = _tempcolor;
+    });
+  }
+
+  void _handleTabChange(){
+    setState(() {
+      if(appbarcolor == Colors.white)
+        pageChanger(0); debugPrint("runs");
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -47,7 +82,7 @@ class MyAppBar extends State<MyAppState> {
             child: Scaffold(
               appBar: AppBar(
                 elevation: 0,
-                backgroundColor: globalAppBarColor,
+                backgroundColor: appbarcolor,
                 bottom: TabBar(
                   tabs: [
                     Tab(
@@ -81,12 +116,16 @@ class MyAppBar extends State<MyAppState> {
                   ],
                   indicatorColor: Colors.black,
                   indicatorWeight: 3,
+                  controller: tabcontroller,
                 ),
               ),
               body: TabBarView(
+                controller: tabcontroller,
                 children: <Widget>[
                   Medicines(),
-                  HomePage(),
+                  HomePage(
+                    parentAction: _updateMyTitle,
+                  ),
                   Profile(),
                 ],
               ),
@@ -95,8 +134,9 @@ class MyAppBar extends State<MyAppState> {
 }
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title}) : super(key: key);
+  HomePage({Key key, this.title, this.parentAction}) : super(key: key);
   final String title;
+  final ValueChanged<Color> parentAction;
 
   @override
   HomePageState createState() => HomePageState();
@@ -105,6 +145,8 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   MainAxisAlignment menuIndicatorAlign = MainAxisAlignment.center;
+
+ 
 
   void onDrawerPageChanged(int page) {
     Color _tempColor;
@@ -118,26 +160,11 @@ class HomePageState extends State<HomePage>
     }
     setState(() {
       globalAppBarColor = _tempColor;
+      widget.parentAction(_tempColor);
+      print("Color Changed");
     });
   }
-
-  void onMenuPageChanged(int page) {
-    MainAxisAlignment _tempAlign;
-    switch (page) {
-      case 0:
-        _tempAlign = MainAxisAlignment.start;
-        break;
-      case 1:
-        _tempAlign = MainAxisAlignment.center;
-        break;
-      case 2:
-        _tempAlign = MainAxisAlignment.end;
-        break;
-    }
-    setState(() {
-      menuIndicatorAlign = _tempAlign;
-    });
-  }
+  
 
   bool onWillPop() {
     if (globalDrawercontroller.page.round() ==
@@ -151,6 +178,8 @@ class HomePageState extends State<HomePage>
       return false;
     }
   }
+
+
 
   @override
   Widget build(BuildContext context) {
