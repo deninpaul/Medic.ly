@@ -373,9 +373,6 @@ class NewMedPageState extends State<NewMedPage> {
   }
 
   void save(BuildContext context) async {
-    moveToLastScreen();
-    pageChanger(1);
-
     List<String> selectedDays = [];
     for (int i = 0; i < 7; i++) {
       if (daySelected[i]) selectedDays.add(day[i]);
@@ -392,6 +389,8 @@ class NewMedPageState extends State<NewMedPage> {
         debugPrint("Add failed to ${selectedDays[i]}");
       }
     }
+    moveToLastScreen();
+    pageChanger();
   }
 }
 

@@ -66,7 +66,7 @@ class ShowNextMed extends State<NextMedState> {
         ),
       ),
       Container(
-        height: size.height - 400,
+        height: size.height/2,
         color: Colors.amber,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,

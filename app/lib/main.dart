@@ -21,16 +21,14 @@ PageController globalDrawercontroller = PageController(initialPage: 0);
 PageController globalMenucontroller = PageController(initialPage: 1);
 Color globalAppBarColor = Colors.amber;
 
-class MyApp extends StatelessWidget{
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home:MyAppState());
+    return MaterialApp(home: MyAppState());
   }
-  
 }
 
-class MyAppState extends StatefulWidget{
+class MyAppState extends StatefulWidget {
   MyAppState({Key key, this.title}) : super(key: key);
   final String title;
 
@@ -38,49 +36,60 @@ class MyAppState extends StatefulWidget{
   MyAppBar createState() => MyAppBar();
 }
 
-class MyAppBar extends State<MyAppState>  with SingleTickerProviderStateMixin{
+class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
   TabController tabcontroller;
-  GlobalKey<HomePageState> _keyChild1 = GlobalKey();
   Color appbarcolor = Colors.amber;
+  int intialpageIndex = 1;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
-    tabcontroller =  new TabController(length: 3, vsync: this, initialIndex: 1);
-    tabcontroller.addListener(_handleTabChange);
-    setState(() {
-    });
+    tabcontroller = new TabController(length: 3, vsync: this, initialIndex: 1);
+    setState(() {});
   }
 
-
   @override
-  void dispose(){
+  void dispose() {
     tabcontroller.dispose();
     super.dispose();
   }
 
-  _updateMyTitle(Color _tempcolor){
+  _updateMyTitle(Color _tempcolor) {
     setState(() {
       appbarcolor = _tempcolor;
     });
   }
 
-  void _handleTabChange(){
-    setState(() {
-      if(appbarcolor == Colors.white)
-        pageChanger(0); debugPrint("runs");
-    });
+  bool onWillPop() {
+    if (tabcontroller.index == 1) {
+      return true;
+    } else {
+      tabcontroller.animateTo(
+        intialpageIndex,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+      return false;
+    }
   }
+
+  // void _handleTabChange(){
+  //   setState(() {
+  //     if(appbarcolor == Colors.white)
+  //       pageChanger(0); debugPrint("runs");
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.amber, fontFamily: 'Montserrat'),
+        theme: ThemeData(primarySwatch: Colors.amber, fontFamily: 'Montserrat'),
         title: 'Home Page',
         home: DefaultTabController(
             length: 3,
             child: Scaffold(
               appBar: AppBar(
+                title: Container(padding: EdgeInsets.only(left:18, top: 5),child: Text("elder.ly", style: TextStyle(fontFamily: 'Montserrat', fontWeight:FontWeight.w700, fontSize: 25 ))),
                 elevation: 0,
                 backgroundColor: appbarcolor,
                 bottom: TabBar(
@@ -96,14 +105,12 @@ class MyAppBar extends State<MyAppState>  with SingleTickerProviderStateMixin{
                       ),
                     ),
                     Tab(
-                        child: Text(
-                      "Home",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20,
-                      ),
-                      textAlign: TextAlign.center
-                    )),
+                        child: Text("Home",
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 20,
+                            ),
+                            textAlign: TextAlign.center)),
                     Tab(
                         child: Text(
                       "Profile",
@@ -122,11 +129,13 @@ class MyAppBar extends State<MyAppState>  with SingleTickerProviderStateMixin{
               body: TabBarView(
                 controller: tabcontroller,
                 children: <Widget>[
-                  Medicines(),
+                  WillPopScope(
+                    onWillPop: () => Future.sync(onWillPop), child: Medicines()),
                   HomePage(
                     parentAction: _updateMyTitle,
                   ),
-                  Profile(),
+                  WillPopScope(
+                    onWillPop: () => Future.sync(onWillPop), child: Profile()),
                 ],
               ),
             )));
@@ -142,11 +151,11 @@ class HomePage extends StatefulWidget {
   HomePageState createState() => HomePageState();
 }
 
-class HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
+class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   MainAxisAlignment menuIndicatorAlign = MainAxisAlignment.center;
 
- 
+  @override
+  bool get wantKeepAlive => true;
 
   void onDrawerPageChanged(int page) {
     Color _tempColor;
@@ -164,7 +173,6 @@ class HomePageState extends State<HomePage>
       print("Color Changed");
     });
   }
-  
 
   bool onWillPop() {
     if (globalDrawercontroller.page.round() ==
@@ -178,8 +186,6 @@ class HomePageState extends State<HomePage>
       return false;
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -205,13 +211,13 @@ class HomePageState extends State<HomePage>
   }
 }
 
-void pageChanger(int caseChecker) {
+void pageChanger({int caseChecker = 0}) {
   globalDrawercontroller.previousPage(
       duration: Duration(milliseconds: 1000), curve: Curves.easeInOut);
   debugPrint("moved back");
-  if (caseChecker == 1) {
-    globalDrawercontroller.nextPage(
-        duration: Duration(milliseconds: 600), curve: Curves.easeInOut);
-    debugPrint("moved front");
-  }
+  // if (caseChecker == 1) {
+  //   globalDrawercontroller.nextPage(
+  //       duration: Duration(milliseconds: 600), curve: Curves.easeInOut);
+  //   debugPrint("moved front");
+  // }
 }
