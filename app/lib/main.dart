@@ -1,12 +1,14 @@
 //import 'package:app/models/medicine.dart';
 import 'dart:convert';
 
+import 'package:app/ui/history.dart';
 import 'package:app/ui/medlist.dart';
 import 'package:flutter/material.dart';
 import 'package:app/ui/home.dart';
 import 'package:app/ui/medlist.dart';
 import 'package:flutter/rendering.dart';
 import 'package:app/ui/showMedicine.dart';
+import 'package:app/ui/history.dart';
 //import 'package:app/ui/newReminder.dart';
 //import 'package:path/path.dart';
 //import 'package:sqflite/sqflite.dart';
@@ -135,7 +137,7 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
                     parentAction: _updateMyTitle,
                   ),
                   WillPopScope(
-                    onWillPop: () => Future.sync(onWillPop), child: Profile()),
+                    onWillPop: () => Future.sync(onWillPop), child: History()),
                 ],
               ),
             )));
@@ -211,13 +213,13 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   }
 }
 
-void pageChanger({int caseChecker = 0}) {
+void pageChanger(int caseChecker) {
   globalDrawercontroller.previousPage(
       duration: Duration(milliseconds: 1000), curve: Curves.easeInOut);
   debugPrint("moved back");
-  // if (caseChecker == 1) {
-  //   globalDrawercontroller.nextPage(
-  //       duration: Duration(milliseconds: 600), curve: Curves.easeInOut);
-  //   debugPrint("moved front");
-  // }
+  if (caseChecker == 1) {
+    globalDrawercontroller.nextPage(
+        duration: Duration(milliseconds: 600), curve: Curves.easeInOut);
+    debugPrint("moved front");
+  }
 }

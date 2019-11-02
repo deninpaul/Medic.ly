@@ -390,7 +390,7 @@ class NewMedPageState extends State<NewMedPage> {
       }
     }
     moveToLastScreen();
-    pageChanger();
+    pageChanger(1);
   }
 }
 

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:app/utils/database_helper.dart';
 import 'package:app/models/medicine.dart';
+import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:app/utils/functions.dart';
 //import 'package:app/main.dart';
 //import 'package:app/ui/home.dart';
 
-
-class MedList extends StatelessWidget {
+class History extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //final size = MediaQuery.of(context).size;
@@ -15,45 +15,112 @@ class MedList extends StatelessWidget {
       children: <Widget>[
         new Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: Colors.amber,
           ),
         ),
-        MedListPage(),
+        HistoryList(),
       ],
     );
   }
 }
 
-class MedListPage extends StatefulWidget {
-  MedListPage({Key key, this.title}) : super(key: key);
+class HistoryList extends StatefulWidget {
+  HistoryList({Key key, this.title}) : super(key: key);
   final String title;
 
   @override
-  ListMedByDay createState() => ListMedByDay();
+  ListHistoryByDay createState() => ListHistoryByDay();
 }
 
-class ListMedByDay extends State<MedListPage> {
+class ListHistoryByDay extends State<HistoryList> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Medicine> sunList, monList, tueList, wedList, thuList, friList, satList;
+  DateTime today = DateTime.now();
+  List<List<Medicine>> weekList = new List<List<Medicine>>();
+  List<String> weekDays = new List<String>();
 
   @override
   Widget build(BuildContext context) {
     updateListView();
-
+    updateHistoryView();
     return Container(
       padding: EdgeInsets.only(top: 10),
-      child: ListView(
-        children: <Widget>[
-          medThisDay("Sunday", sunList),
-          medThisDay("Monday", monList),
-          medThisDay("Tuesday", tueList),
-          medThisDay("Wednesday", wedList),
-          medThisDay("Thursday", thuList),
-          medThisDay("Friday", friList),
-          medThisDay("Saturday", satList),
-        ],
+      child: ListView.builder(
+        itemCount: 7,
+        itemBuilder: (context, int position) {
+          return medThisDay(weekDays[position], weekList[position]);
+        },
       ),
     );
+  }
+
+  void updateHistoryView() {
+    int x = dayReturner();
+    int j = 0;
+    while (j < 7) {
+      if (x == 0) {
+        x = 7;
+      }
+      historyList(x);
+      x--;
+      j++;
+    }
+  }
+
+  int dayReturner() {
+    String temp = "${DateFormat('EEEE').format(today).toLowerCase()}";
+    switch (temp) {
+      case 'sunday':
+        return 1;
+      case 'monday':
+        return 2;
+      case 'tuesday':
+        return 3;
+      case 'wednesday':
+        return 4;
+      case 'thursday':
+        return 5;
+      case 'friday':
+        return 6;
+      case 'saturday':
+        return 7;
+    }
+  }
+
+  void historyList(int x) {
+    switch (x) {
+      case 1:
+        this.weekList.add(this.sunList);
+        weekDays.add('Sunday');
+        break;
+      case 2:
+        
+        weekList.add(this.monList);
+        weekDays.add('Monday');
+        debugPrint("${monList[0].title}");
+        debugPrint("${weekList[0].length}");
+        break;
+      case 3:
+        weekList.add(this.tueList);
+        weekDays.add('Tuesday');
+        break;
+      case 4:
+        weekList.add(this.wedList);
+        weekDays.add('Wednesday');
+        break;
+      case 5:
+        weekList.add(this.thuList);
+        weekDays.add('Thursday');
+        break;
+      case 6:
+        weekList.add(this.friList);
+        weekDays.add('Friday');
+        break;
+      case 7:
+        weekList.add(this.satList);
+        weekDays.add('Saturday');
+        break;
+    }
   }
 
   void updateListView() {
@@ -156,4 +223,3 @@ class ListMedByDay extends State<MedListPage> {
     }
   }
 }
-
