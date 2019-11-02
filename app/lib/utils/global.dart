@@ -20,7 +20,7 @@ String timeDisplay(String timegiven) {
 
 
 
-Widget medThisDay(String dayofweek, List<Medicine> daylist) {
+Widget medThisDay(String dayofweek, List<Medicine> daylist, [Color cardColor = Colors.white]) {
   return Container(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -43,6 +43,7 @@ Widget medThisDay(String dayofweek, List<Medicine> daylist) {
           height: 180,
           child: Card(
             child: getMedListView(daylist),
+            color: cardColor,
             elevation: 0,
           ),
         ),

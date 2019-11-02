@@ -4,7 +4,7 @@ import 'package:app/utils/database_helper.dart';
 import 'package:app/models/medicine.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:app/utils/functions.dart';
+import 'package:app/utils/global.dart';
 //import 'package:app/ui/medlist.dart';
 //import 'package:app/ui/medlist.dart';
 

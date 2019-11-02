@@ -3,7 +3,7 @@ import 'package:app/utils/database_helper.dart';
 import 'package:app/models/medicine.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:app/utils/functions.dart';
+import 'package:app/utils/global.dart';
 //import 'package:app/main.dart';
 //import 'package:app/ui/home.dart';
 
@@ -36,8 +36,7 @@ class ListHistoryByDay extends State<HistoryList> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Medicine> sunList, monList, tueList, wedList, thuList, friList, satList;
   DateTime today = DateTime.now();
-  List<List<Medicine>> weekList = new List<List<Medicine>>();
-  List<String> weekDays = new List<String>();
+  List<int> dayIndex = new List<int>();
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +47,7 @@ class ListHistoryByDay extends State<HistoryList> {
       child: ListView.builder(
         itemCount: 7,
         itemBuilder: (context, int position) {
-          return medThisDay(weekDays[position], weekList[position]);
+          return historyList(dayIndex[position]);
         },
       ),
     );
@@ -61,7 +60,7 @@ class ListHistoryByDay extends State<HistoryList> {
       if (x == 0) {
         x = 7;
       }
-      historyList(x);
+      dayIndex.add(x);
       x--;
       j++;
     }
@@ -87,40 +86,35 @@ class ListHistoryByDay extends State<HistoryList> {
     }
   }
 
-  void historyList(int x) {
+  Widget historyList(int x) {
+    List<Medicine> temp = new List<Medicine>();
+    String day;
     switch (x) {
       case 1:
-        this.weekList.add(this.sunList);
-        weekDays.add('Sunday');
+        day = "Sunday";
+        temp = sunList;
         break;
       case 2:
-        
-        weekList.add(this.monList);
-        weekDays.add('Monday');
-        debugPrint("${monList[0].title}");
-        debugPrint("${weekList[0].length}");
+        day = "Monday"; temp = monList;
         break;
       case 3:
-        weekList.add(this.tueList);
-        weekDays.add('Tuesday');
+        day = "Tuesday"; temp =tueList;
         break;
       case 4:
-        weekList.add(this.wedList);
-        weekDays.add('Wednesday');
+        day = "Wednesday"; temp = wedList;
         break;
       case 5:
-        weekList.add(this.thuList);
-        weekDays.add('Thursday');
+        day = "Thursday"; temp = thuList;
         break;
       case 6:
-        weekList.add(this.friList);
-        weekDays.add('Friday');
+        day = "Friday"; temp =friList;
         break;
       case 7:
-        weekList.add(this.satList);
-        weekDays.add('Saturday');
+        day = "Saturday"; temp =satList;
         break;
     }
+    return medThisDay(day, temp, Colors.amber);
+
   }
 
   void updateListView() {

@@ -42,6 +42,7 @@ class NewMedPageState extends State<NewMedPage> {
   }
 
   void _daySelector(int i) {
+    FocusScope.of(context).requestFocus(FocusNode());
     setState(() {
       daySelected[i] = !daySelected[i];
     });
@@ -202,6 +203,7 @@ class NewMedPageState extends State<NewMedPage> {
                               ? iseveryday = iseveryday
                               : iseveryday = false,
                           onChanged: (bool value) {
+                            FocusScope.of(context).requestFocus(FocusNode());
                             setState(() {
                               for (int i = 0; i < daySelected.length; i++) {
                                 daySelected[i] = true;
@@ -373,6 +375,7 @@ class NewMedPageState extends State<NewMedPage> {
   }
 
   void save(BuildContext context) async {
+    
     List<String> selectedDays = [];
     for (int i = 0; i < 7; i++) {
       if (daySelected[i]) selectedDays.add(day[i]);

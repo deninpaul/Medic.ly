@@ -42,12 +42,13 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
   TabController tabcontroller;
   Color appbarcolor = Colors.amber;
   int intialpageIndex = 1;
+  Color homepageColor = Colors.green;
 
   @override
   void initState() {
     super.initState();
     tabcontroller = new TabController(length: 3, vsync: this, initialIndex: 1);
-    setState(() {});
+    tabcontroller.addListener(listener);
   }
 
   @override
@@ -56,10 +57,8 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  _updateMyTitle(Color _tempcolor) {
-    setState(() {
-      appbarcolor = _tempcolor;
-    });
+  void listener() {
+    debugPrint("$tabcontroller.index hai");
   }
 
   bool onWillPop() {
@@ -75,12 +74,31 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
     }
   }
 
+
+  _updateMyTitle(Color _tempcolor) {
+    setState(() {
+      appbarcolor = _tempcolor;
+      homepageColor = appbarcolor;
+    });
+  }
+
   // void _handleTabChange(){
   //   setState(() {
   //     if(appbarcolor == Colors.white)
   //       pageChanger(0); debugPrint("runs");
   //   });
   // }
+
+  Color appbarColorChanger() {
+    setState(() {
+      if (tabcontroller.index == 1)
+        appbarcolor = homepageColor;
+      else
+        appbarcolor = Colors.amber;
+    });
+
+    return appbarcolor;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,9 +109,15 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
             length: 3,
             child: Scaffold(
               appBar: AppBar(
-                title: Container(padding: EdgeInsets.only(left:18, top: 5),child: Text("elder.ly", style: TextStyle(fontFamily: 'Montserrat', fontWeight:FontWeight.w700, fontSize: 25 ))),
+                title: Container(
+                    padding: EdgeInsets.only(left: 18, top: 5),
+                    child: Text("elder.ly",
+                        style: TextStyle(
+                            fontFamily: 'Montserrat',
+                            fontWeight: FontWeight.w700,
+                            fontSize: 25))),
                 elevation: 0,
-                backgroundColor: appbarcolor,
+                backgroundColor: Colors.amber,
                 bottom: TabBar(
                   tabs: [
                     Tab(
@@ -115,7 +139,7 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
                             textAlign: TextAlign.center)),
                     Tab(
                         child: Text(
-                      "Profile",
+                      "History",
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
                         fontSize: 20,
@@ -132,12 +156,14 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
                 controller: tabcontroller,
                 children: <Widget>[
                   WillPopScope(
-                    onWillPop: () => Future.sync(onWillPop), child: Medicines()),
+                      onWillPop: () => Future.sync(onWillPop),
+                      child: Medicines()),
                   HomePage(
                     parentAction: _updateMyTitle,
                   ),
                   WillPopScope(
-                    onWillPop: () => Future.sync(onWillPop), child: History()),
+                      onWillPop: () => Future.sync(onWillPop),
+                      child: History()),
                 ],
               ),
             )));
@@ -172,7 +198,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
     setState(() {
       globalAppBarColor = _tempColor;
       widget.parentAction(_tempColor);
-      print("Color Changed");
+      print("Color Changed to ${_tempColor}");
     });
   }
 

@@ -9,8 +9,11 @@ class Medicine {
   String medName;
   String days;
   String time;
+  bool isCompleted;
+  bool isTakenOnTime;
+  String medIcon;
 
-  Medicine({this.id, this.title, this.days, this.time, this.medName});
+  Medicine({this.id, this.title, this.days, this.time, this.medName, this.isCompleted, this.isTakenOnTime, this.medIcon});
 
   // Convert a Note object into a Map object
   Map<String, dynamic> toMap() {
@@ -20,6 +23,9 @@ class Medicine {
       'medName': medName,
       'days': days,
       'time': time,
+      'isCompleted': isCompleted,
+      'isTakenOnTime': isTakenOnTime,
+      'medIcon': medIcon
     };
   }
 
@@ -30,5 +36,8 @@ class Medicine {
     this.medName = map['medName'];
     this.days = map['days'];
     this.time = map['time'];
+    this.isTakenOnTime = map['isTakenOnTime'];
+    this.isCompleted = map['isCompleted'];
+    this.medIcon = map['medIcon'];
   }
 }
