@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:core';
 import 'dart:io';
 import 'package:sqflite/sqflite.dart';
 import 'package:app/models/medicine.dart';
@@ -7,6 +9,16 @@ import 'package:path_provider/path_provider.dart';
 class DatabaseHelper {
   static DatabaseHelper _databaseHelper;
   static Database _database;
+
+  List<String> day = [
+    'sunday',
+    'monday',
+    'tuesday',
+    'wednesday',
+    'thursday',
+    'friday',
+    'saturday'
+  ];
 
   DatabaseHelper._createInstance();
 
@@ -36,16 +48,6 @@ class DatabaseHelper {
   }
 
   void _createDb(Database db, int newVersion) async {
-    List<String> day = [
-      'sunday',
-      'monday',
-      'tuesday',
-      'wednesday',
-      'thursday',
-      'friday',
-      'saturday'
-    ];
-
     for (int i = 0; i < 7; i++) {
       await db.execute(
           'CREATE TABLE ${day[i]}(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, medName TEXT, days TEXT, time TEXT, isCompleted INT, isTakenOnTime INT, medIcon TEXT)');
@@ -59,10 +61,27 @@ class DatabaseHelper {
     return result;
   }
 
+  Future<List<Medicine>> getAllMedicineList() async {
+    Database db = await this.database;
+    List<Map<String, dynamic>> fullListdata = List<Map<String, dynamic>>();
+
+    for (int i = 0; i < 7; i++)
+      fullListdata..addAll(await db.query('${day[i]}'));
+    int count = fullListdata.length;
+
+    List<Medicine> fullList = List<Medicine>();
+    // For loop to create a 'Note List' from a 'Map List'
+    for (int i = 0; i < count; i++) {
+      fullList.add(Medicine.fromMapObject(fullListdata[i]));
+    }
+
+    return fullList;
+  }
+
   Future<int> insertNote(Medicine med, String day) async {
     Database db = await this.database;
-    var result = await db.insert('$day', med.toMap()); 
-    return result; 
+    var result = await db.insert('$day', med.toMap());
+    return result;
   }
 
   Future<int> updateNote(Medicine med, String day) async {

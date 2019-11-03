@@ -1,6 +1,20 @@
 import 'package:app/models/medicine.dart';
 import 'package:flutter/material.dart';
 
+int homePageIndex;
+PageController globalDrawercontroller = PageController(initialPage: 0);
+void pageChanger(int caseChecker) {
+  if (caseChecker == 0) {
+    globalDrawercontroller.nextPage(
+        duration: Duration(milliseconds: 400), curve: Curves.easeInOut);
+    debugPrint("moved front");
+  } else {
+    globalDrawercontroller.previousPage(
+        duration: Duration(milliseconds: 400), curve: Curves.easeInOut);
+    debugPrint("moved back");
+  }
+}
+
 String timeDisplay(String timegiven) {
   var timesplitted = timegiven.split(':');
   if (int.parse(timesplitted[0]) > 12) {
@@ -18,9 +32,8 @@ String timeDisplay(String timegiven) {
   }
 }
 
-
-
-Widget medThisDay(String dayofweek, List<Medicine> daylist, [Color cardColor = Colors.white]) {
+Widget medThisDay(String dayofweek, List<Medicine> daylist,
+    [Color cardColor = Colors.white]) {
   return Container(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.center,

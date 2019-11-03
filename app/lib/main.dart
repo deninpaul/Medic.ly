@@ -9,6 +9,7 @@ import 'package:app/ui/medlist.dart';
 import 'package:flutter/rendering.dart';
 import 'package:app/ui/showMedicine.dart';
 import 'package:app/ui/history.dart';
+import 'package:app/utils/global.dart';
 //import 'package:app/ui/newReminder.dart';
 //import 'package:path/path.dart';
 //import 'package:sqflite/sqflite.dart';
@@ -19,7 +20,6 @@ void main() async {
   runApp(MyApp());
 }
 
-PageController globalDrawercontroller = PageController(initialPage: 0);
 PageController globalMenucontroller = PageController(initialPage: 1);
 Color globalAppBarColor = Colors.amber;
 
@@ -78,7 +78,6 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
     }
   }
 
-
   _updateMyTitle(Color _tempcolor) {
     setState(() {
       appbarcolor = _tempcolor;
@@ -115,41 +114,16 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
               appBar: AppBar(
                 title: Container(
                     padding: EdgeInsets.only(left: 18, top: 5),
-                    child: Text("elder.ly",
+                    child: Text("medic.ly",
                         style: TextStyle(
-                            fontFamily: 'Montserrat',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 25))),
+                            fontWeight: FontWeight.w700, fontSize: 25))),
                 elevation: 0,
                 backgroundColor: appbarColorChanger(),
                 bottom: TabBar(
                   tabs: [
-                    Tab(
-                      child: Text(
-                        "Meds",
-                        style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          fontSize: 20,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    Tab(
-                        child: Text("Home",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              fontSize: 20,
-                            ),
-                            textAlign: TextAlign.center)),
-                    Tab(
-                        child: Text(
-                      "History",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 20,
-                      ),
-                      textAlign: TextAlign.center,
-                    )),
+                    tabBarText('Meds', TextAlign.left),
+                    tabBarText('Home', TextAlign.center),
+                    tabBarText('History', TextAlign.right),
                   ],
                   indicatorColor: Colors.black,
                   indicatorWeight: 3,
@@ -170,7 +144,23 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
                       child: History()),
                 ],
               ),
+              floatingActionButton: bottomFABs(context),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.endFloat,
             )));
+  }
+
+  Tab tabBarText(String title, TextAlign align) {
+    return Tab(
+      child: Text(
+        title,
+        style: TextStyle(
+          fontWeight: FontWeight.w700,
+          fontSize: 20,
+        ),
+        textAlign: align,
+      ),
+    );
   }
 }
 
@@ -182,11 +172,10 @@ class HomePage extends StatefulWidget {
   HomePageState createState() => HomePageState();
 }
 
-
 GlobalKey<ShowNextMed> keyChild1 = GlobalKey();
+
 class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   MainAxisAlignment menuIndicatorAlign = MainAxisAlignment.center;
-  
 
   @override
   bool get wantKeepAlive => true;
@@ -204,6 +193,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
     }
     setState(() {
       globalAppBarColor = _tempColor;
+      homePageIndex = page;
       widget.parentAction(_tempColor);
       print("Color Changed to ${_tempColor}");
     });
@@ -241,18 +231,8 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
             onPageChanged: onDrawerPageChanged,
             controller: globalDrawercontroller,
           ),
-          bottomFABs(context),
         ])));
   }
 }
 
-void pageChanger(int caseChecker) {
-  globalDrawercontroller.previousPage(
-      duration: Duration(milliseconds: 1000), curve: Curves.easeInOut);
-  debugPrint("moved back");
-  if (caseChecker == 1) {
-    globalDrawercontroller.nextPage(
-        duration: Duration(milliseconds: 600), curve: Curves.easeInOut);
-    debugPrint("moved front");
-  }
-}
+

@@ -307,11 +307,8 @@ Widget currentPageIndicator(double deviceWidth, MainAxisAlignment lineAlign) {
 }
 
 Widget bottomFABs(BuildContext context) {
-  return Align(
-    alignment: AlignmentDirectional.bottomEnd,
-    child: Container(
-      margin: EdgeInsets.all(20),
-      height: 70,
+  return Container(
+     height: 70,
       width: 70,
       child: FloatingActionButton(
         onPressed: () {
@@ -327,6 +324,5 @@ Widget bottomFABs(BuildContext context) {
         foregroundColor: Colors.white,
         elevation: 6,
       ),
-    ),
   );
 }

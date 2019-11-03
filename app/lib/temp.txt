@@ -1,0 +1,14 @@
+    List<String> medicinelist = List<String>();
+    for(int i=0; i<count; i++){
+      if(!medicinelist.contains(fullList[i].medName)){
+        medicinelist.add(fullList[i].medName);
+      }
+    }
+
+    List<Medicine> medListbyName = List<Medicine>();
+    
+      for(int j=0;j<count;j++){
+        if(fullList[j].title == medicinelist[0])
+          medListbyName.add(fullList[j]);
+      }
+    
