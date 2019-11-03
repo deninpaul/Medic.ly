@@ -48,7 +48,7 @@ class DatabaseHelper {
 
     for (int i = 0; i < 7; i++) {
       await db.execute(
-          'CREATE TABLE ${day[i]}(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, medName TEXT, days TEXT, time TEXT)');
+          'CREATE TABLE ${day[i]}(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, medName TEXT, days TEXT, time TEXT, isCompleted INT, isTakenOnTime INT, medIcon TEXT)');
     }
   }
 

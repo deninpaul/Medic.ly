@@ -76,6 +76,7 @@ ListView getMedListView(List<Medicine> daylist) {
                 children: <Widget>[
                   Expanded(
                     child: Container(
+                      child: Image.asset(daylist[position].medIcon),
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white,

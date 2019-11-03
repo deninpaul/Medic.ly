@@ -42,7 +42,8 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
   TabController tabcontroller;
   Color appbarcolor = Colors.amber;
   int intialpageIndex = 1;
-  Color homepageColor = Colors.green;
+  int currentpage = 1;
+  Color homepageColor;
 
   @override
   void initState() {
@@ -58,7 +59,10 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
   }
 
   void listener() {
-    debugPrint("$tabcontroller.index hai");
+    setState(() {
+      currentpage = tabcontroller.index;
+      debugPrint("$currentpage");
+    });
   }
 
   bool onWillPop() {
@@ -91,7 +95,7 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
 
   Color appbarColorChanger() {
     setState(() {
-      if (tabcontroller.index == 1)
+      if (currentpage == 1)
         appbarcolor = homepageColor;
       else
         appbarcolor = Colors.amber;
@@ -117,7 +121,7 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
                             fontWeight: FontWeight.w700,
                             fontSize: 25))),
                 elevation: 0,
-                backgroundColor: Colors.amber,
+                backgroundColor: appbarColorChanger(),
                 bottom: TabBar(
                   tabs: [
                     Tab(
@@ -174,13 +178,15 @@ class HomePage extends StatefulWidget {
   HomePage({Key key, this.title, this.parentAction}) : super(key: key);
   final String title;
   final ValueChanged<Color> parentAction;
-
   @override
   HomePageState createState() => HomePageState();
 }
 
+
+GlobalKey<ShowNextMed> keyChild1 = GlobalKey();
 class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
   MainAxisAlignment menuIndicatorAlign = MainAxisAlignment.center;
+  
 
   @override
   bool get wantKeepAlive => true;
@@ -190,6 +196,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
     switch (page) {
       case 0:
         _tempColor = Colors.amber;
+        keyChild1.currentState.updateNext();
         break;
       case 1:
         _tempColor = Colors.white;
@@ -223,7 +230,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
         theme: ThemeData(primarySwatch: Colors.amber, fontFamily: 'Montserrat'),
         home: new Scaffold(
             body: Stack(children: <Widget>[
-          NextMed(),
+          NextMed(key: keyChild1),
           PageView(
             children: <Widget>[
               BottomDrawer(),

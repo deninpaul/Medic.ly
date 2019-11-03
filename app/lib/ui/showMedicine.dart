@@ -21,7 +21,7 @@ class Medicines extends StatelessWidget {
                     fontWeight: FontWeight.w700,),
               ),
               alignment: AlignmentDirectional.center,
-              color: Colors.white,
+              color: Colors.amber,
             )
           ],
         ),

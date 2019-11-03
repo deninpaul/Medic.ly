@@ -8,7 +8,6 @@ import 'package:app/utils/global.dart';
 //import 'package:app/ui/medlist.dart';
 //import 'package:app/ui/medlist.dart';
 
-
 class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -32,33 +31,28 @@ class Profile extends StatelessWidget {
   }
 }
 
-class NextMed extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return NextMedState();
-  }
-}
 
-class NextMedState extends StatefulWidget {
-  NextMedState({Key key, this.title}) : super(key: key);
+class NextMed extends StatefulWidget {
+  NextMed({Key key, this.title}) : super(key: key);
   final String title;
 
   @override
   ShowNextMed createState() => ShowNextMed();
 }
 
-class ShowNextMed extends State<NextMedState> {
+class ShowNextMed extends State<NextMed> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Medicine> todayList;
   DateTime today = DateTime.now();
   Medicine nextMed;
-  String nexttitle = " ", nexttime = " ", nextmedName = " ";
+  String nexttitle = " ", nexttime = " ", nextmedName = " ", nextmedIcon;
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
     updateListView();
+    updateNext();
     return Stack(children: <Widget>[
       Container(
         decoration: new BoxDecoration(
@@ -66,7 +60,7 @@ class ShowNextMed extends State<NextMedState> {
         ),
       ),
       Container(
-        height: size.height/2,
+        height: size.height / 2,
         color: Colors.amber,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -74,8 +68,8 @@ class ShowNextMed extends State<NextMedState> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              child:  Text(
-                nexttitle != " " ?"Next": " ",
+              child: Text(
+                nexttitle != " " ? "Next" : " ",
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 25,
@@ -91,6 +85,10 @@ class ShowNextMed extends State<NextMedState> {
                 child: nexttitle != " "
                     ? RaisedButton(
                         elevation: 5,
+                        child: Image.asset(
+                          nextmedIcon,
+                          fit: BoxFit.fill,
+                        ),
                         color: Colors.white,
                         onPressed: () {},
                         shape: RoundedRectangleBorder(
@@ -139,17 +137,23 @@ class ShowNextMed extends State<NextMedState> {
         noteListFuture.then((noteList) {
           setState(() {
             this.todayList = noteList;
-            if (this.todayList != null) {
-              this.nextMed = this.todayList[0];
-              nextmedName = this.nextMed.medName;
-              nexttime = this.nextMed.time;
-              nexttitle = this.nextMed.title;
-            }
           });
         });
       });
     }
   }
+
+  void updateNext() {
+    if (this.todayList.length != 0) {
+      this.nextMed = this.todayList[0];
+      nextmedName = this.nextMed.medName;
+      nexttime = this.nextMed.time;
+      nexttitle = this.nextMed.title;
+      nextmedIcon = this.nextMed.medIcon;
+    }
+  }
+
+
 }
 
 class BottomDrawer extends StatelessWidget {
@@ -167,7 +171,8 @@ class BottomDrawerState extends StatefulWidget {
   ListMedToday createState() => ListMedToday();
 }
 
-class ListMedToday extends State<BottomDrawerState> {
+class ListMedToday extends State<BottomDrawerState>
+    with AutomaticKeepAliveClientMixin {
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Medicine> todayList;
   DateTime today = DateTime.now();
@@ -229,6 +234,9 @@ class ListMedToday extends State<BottomDrawerState> {
       });
     }
   }
+
+  @override
+  bool get wantKeepAlive => false;
 }
 
 Widget appBarMenu(appcolor) {
@@ -312,7 +320,10 @@ Widget bottomFABs(BuildContext context) {
             MaterialPageRoute(builder: (context) => NewMedPage()),
           );
         },
-        child: Icon(Icons.add, size: 50,),
+        child: Icon(
+          Icons.add,
+          size: 50,
+        ),
         foregroundColor: Colors.white,
         elevation: 6,
       ),

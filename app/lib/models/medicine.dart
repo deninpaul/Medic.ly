@@ -36,8 +36,8 @@ class Medicine {
     this.medName = map['medName'];
     this.days = map['days'];
     this.time = map['time'];
-    this.isTakenOnTime = map['isTakenOnTime'];
-    this.isCompleted = map['isCompleted'];
+    this.isTakenOnTime = map['isTakenOnTime']==1?true:false;
+    this.isCompleted = map['isCompleted']==1?true:false;
     this.medIcon = map['medIcon'];
   }
 }

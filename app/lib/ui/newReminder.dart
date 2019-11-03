@@ -28,6 +28,15 @@ class NewMedPageState extends State<NewMedPage> {
     'friday',
     'saturday'
   ];
+  List<String> images = [
+    'assets/images/tablet.png',
+    'assets/images/pill.png',
+    'assets/images/bottle.png',
+    'assets/images/drops.png',
+    'assets/images/lotion.png',
+    'assets/images/syringe.png',
+    'assets/images/inhaler.png'
+  ];
   TimeOfDay _time = new TimeOfDay.now();
   bool iseveryday = true;
   DatabaseHelper helper = DatabaseHelper();
@@ -35,6 +44,10 @@ class NewMedPageState extends State<NewMedPage> {
 
   TextEditingController titleController = TextEditingController();
   TextEditingController medNameController = TextEditingController();
+
+  RoundedRectangleBorder _shape = new RoundedRectangleBorder(
+      borderRadius: BorderRadius.all(Radius.circular(100)),
+      side: BorderSide(color: Colors.black, width: 1));
 
   void initState() {
     super.initState();
@@ -45,6 +58,13 @@ class NewMedPageState extends State<NewMedPage> {
     FocusScope.of(context).requestFocus(FocusNode());
     setState(() {
       daySelected[i] = !daySelected[i];
+    });
+  }
+
+  int selectedRadioTile;
+  void setSelectedRadioTile(int val) {
+    setState(() {
+      selectedRadioTile = val;
     });
   }
 
@@ -180,6 +200,167 @@ class NewMedPageState extends State<NewMedPage> {
                   ],
                 ),
               )),
+          Card(
+              elevation: 5,
+              margin: EdgeInsets.only(left: 10, right: 10, bottom: 15),
+              child: Container(
+                  padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                  margin: EdgeInsets.all(10),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Container(
+                          child: Text(
+                            "Medicine Type",
+                            style: formTitle(),
+                            textAlign: TextAlign.left,
+                          ),
+                          margin: EdgeInsets.only(bottom: 20, left: 10),
+                        ),
+                        Container(
+                            padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+                            child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
+                                  Card(
+                                      elevation: 5,
+                                      child: RadioListTile(
+                                        value: 1,
+                                        groupValue: selectedRadioTile,
+                                        title: Text(
+                                          "Tablet",
+                                          style: formBox(),
+                                        ),
+                                        activeColor: Colors.amber,
+                                        secondary: Container(
+                                          height: 45,
+                                          child: Image.asset(images[0]),
+                                        ),
+                                        onChanged: (val) {
+                                          setSelectedRadioTile(val);
+                                        },
+                                        selected: true,
+                                      )),
+                                  Card(
+                                      elevation: 5,
+                                      child: RadioListTile(
+                                        value: 2,
+                                        groupValue: selectedRadioTile,
+                                        title: Text(
+                                          "Pill",
+                                          style: formBox(),
+                                        ),
+                                        activeColor: Colors.amber,
+                                        secondary: Container(
+                                          height: 45,
+                                          child: Image.asset(images[1]),
+                                        ),
+                                        onChanged: (val) {
+                                          setSelectedRadioTile(val);
+                                        },
+                                        selected: false,
+                                      )),
+                                  Card(
+                                      elevation: 5,
+                                      child: RadioListTile(
+                                        value: 3,
+                                        groupValue: selectedRadioTile,
+                                        title: Text(
+                                          "Bottle",
+                                          style: formBox(),
+                                        ),
+                                        activeColor: Colors.amber,
+                                        secondary: Container(
+                                          height: 45,
+                                          child: Image.asset(images[2]),
+                                        ),
+                                        onChanged: (val) {
+                                          setSelectedRadioTile(val);
+                                        },
+                                        selected: true,
+                                      )),
+                                  Card(
+                                      elevation: 5,
+                                      child: RadioListTile(
+                                        value: 4,
+                                        groupValue: selectedRadioTile,
+                                        title: Text(
+                                          "Drops",
+                                          style: formBox(),
+                                        ),
+                                        activeColor: Colors.amber,
+                                        secondary: Container(
+                                          height: 45,
+                                          child: Image.asset(images[3]),
+                                        ),
+                                        onChanged: (val) {
+                                          setSelectedRadioTile(val);
+                                        },
+                                        selected: false,
+                                      )),
+                                  Card(
+                                      elevation: 5,
+                                      child: RadioListTile(
+                                        value: 5,
+                                        groupValue: selectedRadioTile,
+                                        title: Text(
+                                          "Lotion",
+                                          style: formBox(),
+                                        ),
+                                        activeColor: Colors.amber,
+                                        secondary: Container(
+                                          height: 45,
+                                          child: Image.asset(images[4]),
+                                        ),
+                                        onChanged: (val) {
+                                          setSelectedRadioTile(val);
+                                        },
+                                        selected: true,
+                                      )),
+                                  Card(
+                                      elevation: 5,
+                                      child: RadioListTile(
+                                        value: 6,
+                                        groupValue: selectedRadioTile,
+                                        title: Text(
+                                          "Syringe",
+                                          style: formBox(),
+                                        ),
+                                        activeColor: Colors.amber,
+                                        secondary: Container(
+                                          height: 45,
+                                          child: Image.asset(images[5]),
+                                        ),
+                                        onChanged: (val) {
+                                          setSelectedRadioTile(val);
+                                        },
+                                        selected: false,
+                                      )),
+                                  Card(
+                                      elevation: 5,
+                                      child: RadioListTile(
+                                        value: 7,
+                                        groupValue: selectedRadioTile,
+                                        title: Text(
+                                          "Inhaler",
+                                          style: formBox(),
+                                        ),
+                                        activeColor: Colors.amber,
+                                        secondary: Container(
+                                          height: 45,
+                                          child: Image.asset(images[6]),
+                                        ),
+                                        onChanged: (val) {
+                                          setSelectedRadioTile(val);
+                                        },
+                                        selected: false,
+                                      )),
+                                ]))
+                      ]))),
           Card(
               elevation: 5,
               margin: EdgeInsets.only(left: 10, right: 10, bottom: 15),
@@ -375,13 +556,14 @@ class NewMedPageState extends State<NewMedPage> {
   }
 
   void save(BuildContext context) async {
-    
     List<String> selectedDays = [];
     for (int i = 0; i < 7; i++) {
       if (daySelected[i]) selectedDays.add(day[i]);
     }
-
+    med.medIcon = images[selectedRadioTile-1];
     med.days = selectedDays.toString();
+    med.isCompleted = false;
+    med.isTakenOnTime = false;
 
     int result;
     for (int i = 0; i < selectedDays.length; i++) {

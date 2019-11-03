@@ -43,7 +43,7 @@ class ListHistoryByDay extends State<HistoryList> {
     updateListView();
     updateHistoryView();
     return Container(
-      padding: EdgeInsets.only(top: 10),
+      padding: EdgeInsets.only(top: 20),
       child: ListView.builder(
         itemCount: 7,
         itemBuilder: (context, int position) {
