@@ -1,3 +1,4 @@
+import 'package:app/ui/editMed.dart';
 import 'package:flutter/material.dart';
 import 'package:app/utils/database_helper.dart';
 import 'package:app/models/medicine.dart';
@@ -57,7 +58,9 @@ class ListMedicines extends State<MedicinesState> {
                   elevation: 5,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(100))),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditMedPage(medname: medicinelist[position], fullList: fullList,))) ;
+                  },
                   child: Container(
                     padding: EdgeInsets.only(bottom: 5, top: 5),
                     child: Row(

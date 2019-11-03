@@ -1,6 +1,6 @@
 //import 'package:app/models/medicine.dart';
 import 'dart:convert';
-
+import 'package:flutter/services.dart';
 import 'package:app/ui/history.dart';
 import 'package:app/ui/medlist.dart';
 import 'package:flutter/material.dart';
@@ -17,11 +17,11 @@ import 'package:app/utils/global.dart';
 //import 'package:app/models/medicine.dart';
 
 void main() async {
-  runApp(MyApp());
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]).then((_) {
+    runApp(MyApp());
+  });
 }
-
-PageController globalMenucontroller = PageController(initialPage: 1);
-Color globalAppBarColor = Colors.amber;
 
 class MyApp extends StatelessWidget {
   @override
@@ -94,10 +94,11 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
 
   Color appbarColorChanger() {
     setState(() {
-      if (currentpage == 1)
+      if (currentpage == 1) {
         appbarcolor = homepageColor;
-      else
+      } else {
         appbarcolor = Colors.amber;
+      }
     });
 
     return appbarcolor;
@@ -106,7 +107,10 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        theme: ThemeData(primarySwatch: Colors.amber, fontFamily: 'Montserrat'),
+        theme: ThemeData(
+            primarySwatch: Colors.amber,
+            fontFamily: 'Montserrat',
+            backgroundColor: Colors.amber),
         title: 'Home Page',
         home: DefaultTabController(
             length: 3,
@@ -118,7 +122,7 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
                         style: TextStyle(
                             fontWeight: FontWeight.w700, fontSize: 25))),
                 elevation: 0,
-                backgroundColor: appbarColorChanger(),
+                backgroundColor: Colors.amber,
                 bottom: TabBar(
                   tabs: [
                     tabBarText('Meds', TextAlign.left),
@@ -163,76 +167,3 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
     );
   }
 }
-
-class HomePage extends StatefulWidget {
-  HomePage({Key key, this.title, this.parentAction}) : super(key: key);
-  final String title;
-  final ValueChanged<Color> parentAction;
-  @override
-  HomePageState createState() => HomePageState();
-}
-
-GlobalKey<ShowNextMed> keyChild1 = GlobalKey();
-
-class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
-  MainAxisAlignment menuIndicatorAlign = MainAxisAlignment.center;
-
-  @override
-  bool get wantKeepAlive => true;
-
-  void onDrawerPageChanged(int page) {
-    Color _tempColor;
-    switch (page) {
-      case 0:
-        _tempColor = Colors.amber;
-        keyChild1.currentState.updateNext();
-        break;
-      case 1:
-        _tempColor = Colors.white;
-        break;
-    }
-    setState(() {
-      globalAppBarColor = _tempColor;
-      homePageIndex = page;
-      widget.parentAction(_tempColor);
-      print("Color Changed to ${_tempColor}");
-    });
-  }
-
-  bool onWillPop() {
-    if (globalDrawercontroller.page.round() ==
-        globalDrawercontroller.initialPage) {
-      return true;
-    } else {
-      globalDrawercontroller.previousPage(
-        duration: Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
-      return false;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return MaterialApp(
-        title: 'Home',
-        theme: ThemeData(primarySwatch: Colors.amber, fontFamily: 'Montserrat'),
-        home: new Scaffold(
-            body: Stack(children: <Widget>[
-          NextMed(key: keyChild1),
-          PageView(
-            children: <Widget>[
-              BottomDrawer(),
-              WillPopScope(
-                  onWillPop: () => Future.sync(onWillPop), child: MedList()),
-            ],
-            scrollDirection: Axis.vertical,
-            onPageChanged: onDrawerPageChanged,
-            controller: globalDrawercontroller,
-          ),
-        ])));
-  }
-}
-
-

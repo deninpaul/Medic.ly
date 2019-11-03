@@ -91,9 +91,9 @@ class DatabaseHelper {
     return result;
   }
 
-  Future<int> deleteNote(int id) async {
+  Future<int> deleteNote(int id, String day) async {
     var db = await this.database;
-    int result = await db.rawDelete('DELETE FROM medicines WHERE id = $id');
+    int result = await db.rawDelete('DELETE FROM $day WHERE id = $id');
     return result;
   }
 

@@ -5,29 +5,83 @@ import 'package:app/models/medicine.dart';
 import 'package:intl/intl.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:app/utils/global.dart';
+import 'medlist.dart';
 //import 'package:app/ui/medlist.dart';
 //import 'package:app/ui/medlist.dart';
 
-class Profile extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  HomePage({Key key, this.title, this.parentAction}) : super(key: key);
+  final String title;
+  final ValueChanged<Color> parentAction;
+  @override
+  HomePageState createState() => HomePageState();
+}
+
+GlobalKey<ShowNextMed> keyChild1 = GlobalKey();
+
+class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
+  MainAxisAlignment menuIndicatorAlign = MainAxisAlignment.center;
+
+  @override
+  bool get wantKeepAlive => true;
+
+  void initState(){
+    super.initState();
+    homePageIndex =0;
+  }
+
+  void onDrawerPageChanged(int page) {
+    Color _tempColor;
+    switch (page) {
+      case 0:
+        _tempColor = Colors.amber;
+        keyChild1.currentState.updateNext();
+        break;
+      case 1:
+        _tempColor = Colors.white;
+        break;
+    }
+    setState(() {
+      globalAppBarColor = _tempColor;
+      homePageIndex = page;
+      widget.parentAction(_tempColor);
+      print("Color Changed to ${_tempColor}");
+    });
+  }
+
+  bool onWillPop() {
+    if (globalDrawercontroller.page.round() ==
+        globalDrawercontroller.initialPage) {
+      return true;
+    } else {
+      globalDrawercontroller.previousPage(
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Container(
-            child: Text(
-              "Coming Soon :P",
-              style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Montserrat'),
-            ),
-            alignment: AlignmentDirectional.center,
-            color: Colors.white,
-          )
-        ],
-      ),
-    );
+    final size = MediaQuery.of(context).size;
+    return MaterialApp(
+        title: 'Home',
+        theme: ThemeData(primarySwatch: Colors.amber, fontFamily: 'Montserrat'),
+        home: new Scaffold(
+            body: Stack(children: <Widget>[
+          NextMed(key: keyChild1),
+          PageView(
+            children: <Widget>[
+              BottomDrawer(),
+              WillPopScope(
+                  onWillPop: () => Future.sync(onWillPop), child: MedList()),
+            ],
+            scrollDirection: Axis.vertical,
+            onPageChanged: onDrawerPageChanged,
+            controller: globalDrawercontroller,
+          ),
+        ])));
   }
 }
 
@@ -89,7 +143,7 @@ class ShowNextMed extends State<NextMed> {
                           nextmedIcon,
                           fit: BoxFit.fill,
                         ),
-                        color: Colors.white,
+                        color: Colors.black,
                         onPressed: () {},
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(100)),
@@ -152,8 +206,6 @@ class ShowNextMed extends State<NextMed> {
       nextmedIcon = this.nextMed.medIcon;
     }
   }
-
-
 }
 
 class BottomDrawer extends StatelessWidget {
@@ -205,7 +257,7 @@ class ListMedToday extends State<BottomDrawerState>
               children: <Widget>[
                 Container(height: 20),
                 new Container(
-                  child: medThisDay("Todays", todayList),
+                  child: medThisDay("Todays", todayList,context),
                   padding: EdgeInsets.all(0.0),
                 ),
               ],
@@ -308,21 +360,21 @@ Widget currentPageIndicator(double deviceWidth, MainAxisAlignment lineAlign) {
 
 Widget bottomFABs(BuildContext context) {
   return Container(
-     height: 70,
-      width: 70,
-      child: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => NewMedPage()),
-          );
-        },
-        child: Icon(
-          Icons.add,
-          size: 50,
-        ),
-        foregroundColor: Colors.white,
-        elevation: 6,
+    height: 70,
+    width: 70,
+    child: FloatingActionButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => NewMedPage()),
+        );
+      },
+      child: Icon(
+        Icons.add,
+        size: 50,
       ),
+      foregroundColor: Colors.white,
+      elevation: 6,
+    ),
   );
 }

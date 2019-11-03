@@ -113,7 +113,7 @@ class ListHistoryByDay extends State<HistoryList> {
         day = "Saturday"; temp =satList;
         break;
     }
-    return medThisDay(day, temp, Colors.amber);
+    return medThisDay(day, temp, context, Colors.amber);
 
   }
 

@@ -41,16 +41,16 @@ class ListMedByDay extends State<MedListPage> {
     updateListView();
 
     return Container(
-      padding: EdgeInsets.only(top: 10),
       child: ListView(
         children: <Widget>[
-          medThisDay("Sunday", sunList),
-          medThisDay("Monday", monList),
-          medThisDay("Tuesday", tueList),
-          medThisDay("Wednesday", wedList),
-          medThisDay("Thursday", thuList),
-          medThisDay("Friday", friList),
-          medThisDay("Saturday", satList),
+          Container(height:10),
+          medThisDay("Sunday", sunList, context),
+          medThisDay("Monday", monList, context),
+          medThisDay("Tuesday", tueList, context),
+          medThisDay("Wednesday", wedList, context),
+          medThisDay("Thursday", thuList, context),
+          medThisDay("Friday", friList, context),
+          medThisDay("Saturday", satList, context),
         ],
       ),
     );

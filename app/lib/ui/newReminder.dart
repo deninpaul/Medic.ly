@@ -462,8 +462,6 @@ class NewMedPageState extends State<NewMedPage> {
     med.days = selectedDays.toString();
     med.isCompleted = false;
     med.isTakenOnTime = false;
-    pageChanger(homePageIndex);
-    moveToLastScreen();
 
     int result;
     for (int i = 0; i < selectedDays.length; i++) {
@@ -474,21 +472,8 @@ class NewMedPageState extends State<NewMedPage> {
         debugPrint("Add failed to ${selectedDays[i]}");
       }
     }
+    await Future.delayed(Duration(milliseconds: 500));
+    moveToLastScreen();
+    pageChanger(homePageIndex);
   }
-}
-
-TextStyle formTitle() {
-  return TextStyle(
-      fontSize: 18,
-      color: Colors.black,
-      fontWeight: FontWeight.w600,
-      fontFamily: 'Montserrat');
-}
-
-TextStyle formBox() {
-  return TextStyle(
-      fontSize: 26,
-      color: Colors.black,
-      fontWeight: FontWeight.w500,
-      fontFamily: 'Montserrat');
 }
