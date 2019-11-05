@@ -50,6 +50,7 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
     super.initState();
     tabcontroller = new TabController(length: 3, vsync: this, initialIndex: 1);
     tabcontroller.addListener(listener);
+    homePageIndex = 0;
   }
 
   @override
@@ -148,9 +149,6 @@ class MyAppBar extends State<MyAppState> with SingleTickerProviderStateMixin {
                       child: History()),
                 ],
               ),
-              floatingActionButton: bottomFABs(context),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.endFloat,
             )));
   }
 

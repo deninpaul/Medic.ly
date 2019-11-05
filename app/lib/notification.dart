@@ -3,57 +3,47 @@ import 'package:app/utils/database_helper.dart';
 import 'package:app/models/medicine.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:app/utils/global.dart';
-//import 'package:app/main.dart';
-//import 'package:app/ui/home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class MedList extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    //final size = MediaQuery.of(context).size;
-    return new Stack(
-      children: <Widget>[
-        new Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-          ),
-        ),
-        MedListPage(),
-      ],
-    );
-  }
-}
-
-class MedListPage extends StatefulWidget {
-  MedListPage({Key key, this.title}) : super(key: key);
+class Notification extends StatefulWidget {
+  Notification({Key key, this.title}) : super(key: key);
   final String title;
 
   @override
-  ListMedByDay createState() => ListMedByDay();
+  NotificationState createState() => NotificationState();
 }
 
-class ListMedByDay extends State<MedListPage> {
+class NotificationState extends State<Notification> {
   DatabaseHelper databaseHelper = DatabaseHelper();
   List<Medicine> sunList, monList, tueList, wedList, thuList, friList, satList;
 
   @override
   Widget build(BuildContext context) {
     updateListView();
-    
+    if (sunList == null &&
+        monList == null &&
+        tueList == null &&
+        wedList == null &&
+        thuList == null &&
+        friList == null &&
+        satList == null) {
+      initialDate = DateTime.now();
+      _initialDateChange();
+    }else {
+      _getInitialDate();
+    }
+    return null;
+  }
 
-    return Container(
-      child: ListView(
-        children: <Widget>[
-          Container(height: 10),
-          medThisDay("Sunday", sunList, context),
-          medThisDay("Monday", monList, context),
-          medThisDay("Tuesday", tueList, context),
-          medThisDay("Wednesday", wedList, context),
-          medThisDay("Thursday", thuList, context),
-          medThisDay("Friday", friList, context),
-          medThisDay("Saturday", satList, context),
-        ],
-      ),
-    );
+  _initialDateChange() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('initialDate', "${initialDate.microsecondsSinceEpoch}");
+  }
+  _getInitialDate() async{
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String initialDateString = prefs.getString('initialDate');
+    initialDate = DateTime(int.parse(initialDateString));
+    debugPrint("$initialDate");
   }
 
   void updateListView() {

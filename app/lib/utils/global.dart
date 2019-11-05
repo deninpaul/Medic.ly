@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 PageController globalMenucontroller = PageController(initialPage: 1);
 Color globalAppBarColor = Colors.amber;
 int homePageIndex;
+DateTime initialDate;
 
 PageController globalDrawercontroller = PageController(initialPage: 0);
 void pageChanger(int caseChecker, [int ms = 400]) {
@@ -163,8 +164,6 @@ ListView getMedListView(
     },
   );
 }
-
-void showDetails(Medicine day, BuildContext context) {}
 
 class ShowDetails extends StatefulWidget {
   ShowDetails(
@@ -382,7 +381,6 @@ class ShowDetailsState extends State<ShowDetails> {
         homePageIndex = 0;
       });
 
-
     result = await databaseHelper.updateNote(day,
         weekday == 'todays' ? '${DateFormat('EEEE').format(today)}' : weekday);
     if (result != 0)
@@ -399,7 +397,6 @@ class ShowDetailsState extends State<ShowDetails> {
       debugPrint('Delete successful');
     else
       debugPrint('Delete not succesful');
-
 
     pageChanger(homePageIndex);
     if (homePageIndex == 0)

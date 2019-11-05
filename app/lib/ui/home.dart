@@ -81,6 +81,7 @@ class HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin {
             onPageChanged: onDrawerPageChanged,
             controller: globalDrawercontroller,
           ),
+          Container(child: bottomFABs(context), padding: EdgeInsets.only(right: 15, bottom: 15), alignment: Alignment.bottomRight,)
         ])));
   }
 }
@@ -105,8 +106,11 @@ class ShowNextMed extends State<NextMed> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    updateListView();
-    updateNext();
+    setState(() {
+      updateListView();
+      updateNext();
+    });
+    
     return Stack(children: <Widget>[
       Container(
         decoration: new BoxDecoration(
@@ -143,7 +147,7 @@ class ShowNextMed extends State<NextMed> {
                           nextmedIcon,
                           fit: BoxFit.fill,
                         ),
-                        color: Colors.black,
+                        color: Colors.amber,
                         onPressed: () {},
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(100)),
@@ -164,7 +168,7 @@ class ShowNextMed extends State<NextMed> {
             ),
             Container(
               child: Text(
-                nexttitle,
+                nextmedName,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 25,
@@ -374,7 +378,7 @@ Widget bottomFABs(BuildContext context) {
         size: 50,
       ),
       foregroundColor: Colors.white,
-      elevation: 6,
+      elevation: 10,
     ),
   );
 }

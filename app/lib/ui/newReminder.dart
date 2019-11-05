@@ -1,4 +1,5 @@
 //import 'package:app/main.dart';
+import 'package:app/ui/home.dart';
 import 'package:app/utils/global.dart';
 import 'package:app/utils/database_helper.dart';
 import 'package:flutter/material.dart';
@@ -264,10 +265,14 @@ class NewMedPageState extends State<NewMedPage> {
                         children: <Widget>[
                           Expanded(
                             child: Text(
-                                _time.hour > 12
-                                    ? (_time.minute < 10
-                                        ? '${_time.hour - 12}:0${_time.minute}pm'
-                                        : '${_time.hour - 12}:${_time.minute}pm')
+                                _time.hour >= 12
+                                    ? _time.hour == 12
+                                        ? (_time.minute < 10
+                                            ? '${_time.hour}:0${_time.minute}pm'
+                                            : '${_time.hour}:${_time.minute}pm')
+                                        : (_time.minute < 10
+                                            ? '${_time.hour - 12}:0${_time.minute}pm'
+                                            : '${_time.hour - 12}:${_time.minute}pm')
                                     : (_time.minute < 10
                                         ? '${_time.hour}:0${_time.minute}am'
                                         : '${_time.hour}:${_time.minute}am'),
@@ -391,7 +396,7 @@ class NewMedPageState extends State<NewMedPage> {
       print('Time Selected: ${_time.toString()}');
       setState(() {
         _time = picked;
-        med.time = (_time.hour < 12)
+        med.time = (_time.hour < 10)
             ? "0${_time.hour}:${_time.minute}"
             : "${_time.hour}:${_time.minute}";
       });

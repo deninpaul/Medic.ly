@@ -105,6 +105,7 @@ class DatabaseHelper {
     return result;
   }
 
+
   // Get the 'Map List' [ List<Map> ] and convert it to 'Note List' [ List<Note> ]
   Future<List<Medicine>> getNoteList(String day) async {
     var medicineMapList =

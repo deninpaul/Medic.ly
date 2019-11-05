@@ -2,25 +2,38 @@ import 'package:app/utils/global.dart';
 import 'package:app/utils/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:app/models/medicine.dart';
+import 'package:flutter/rendering.dart';
+import 'package:sqflite/sqflite.dart';
 
 //==============================================================================
 class EditMedPage extends StatefulWidget {
-  EditMedPage({Key key, this.title, this.medname, this.fullList})
+  EditMedPage(
+      {Key key,
+      this.title,
+      this.medname,
+      this.fullList,
+      this.medicon,
+      this.medtitle})
       : super(key: key);
   final String title;
   final String medname;
+  String medicon;
+  String medtitle;
   List<Medicine> fullList;
 
   @override
   EditMedPageState createState() =>
-      EditMedPageState(medname: medname, fullList: fullList);
+      EditMedPageState(medname: medname, medicon: medicon, medtitle: medtitle);
 }
 
 //==============================================================================
 class EditMedPageState extends State<EditMedPage> {
-  EditMedPageState({Key key, this.medname, this.fullList});
+  EditMedPageState({Key key, this.medname, this.medicon, this.medtitle});
   String medname;
-  List<Medicine> fullList;
+  String medicon;
+  int count = 0;
+  String medtitle;
+  List<Medicine> sunList, monList, tueList, wedList, thuList, friList, satList;
   List<bool> daySelected = [false, false, false, false, false, false, false];
   List<String> day = [
     'sunday',
@@ -41,8 +54,7 @@ class EditMedPageState extends State<EditMedPage> {
     'assets/images/inhaler.png'
   ];
   TimeOfDay _time = new TimeOfDay.now();
-  bool iseveryday = true;
-  DatabaseHelper helper = DatabaseHelper();
+  DatabaseHelper databaseHelper = DatabaseHelper();
   Medicine med = new Medicine();
 
   TextEditingController titleController = TextEditingController();
@@ -54,9 +66,10 @@ class EditMedPageState extends State<EditMedPage> {
 
   @override
   Widget build(BuildContext context) {
+    updateAllView();
+
     return Scaffold(
       appBar: AppBar(
-        
         leading: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.pop(context, false),
@@ -84,7 +97,7 @@ class EditMedPageState extends State<EditMedPage> {
                     Container(
                       height: 150,
                       margin: EdgeInsets.only(top: 15),
-                      child: Image.asset("assets/images/tablet.png"),
+                      child: Image.asset(medicon),
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           boxShadow: [
@@ -100,7 +113,7 @@ class EditMedPageState extends State<EditMedPage> {
                           style: TextStyle(
                               fontSize: 25, fontWeight: FontWeight.w700)),
                     ),
-                    Text("Fever",
+                    Text(medtitle,
                         style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
@@ -116,13 +129,13 @@ class EditMedPageState extends State<EditMedPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
               children: <Widget>[
-                dayListTime("Sunday"),
-                dayListTime("Monday"),
-                dayListTime("Tuesday"),
-                dayListTime("Wednesday"),
-                dayListTime("Thursday"),
-                dayListTime("Friday"),
-                dayListTime("Saturday"),
+                dayListTime("Sunday", sunList, context),
+                dayListTime("Monday", monList, context),
+                dayListTime("Tuesday", tueList, context),
+                dayListTime("Wednesday", wedList, context),
+                dayListTime("Thursday", thuList, context),
+                dayListTime("Friday", friList, context),
+                dayListTime("Saturday", satList, context),
               ],
             ),
           ),
@@ -148,32 +161,6 @@ class EditMedPageState extends State<EditMedPage> {
                             });
                           },
                           child: Text(
-                            "Save",
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: 'Montserrat'),
-                          ),
-                          elevation: 2,
-                          color: Colors.amber,
-                          shape: RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30))),
-                        ),
-                        height: 50,
-                        padding: EdgeInsets.only(right: 20),
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        child: RaisedButton(
-                          onPressed: () {
-                            setState(() {
-                              debugPrint("Save button clicked");
-                              moveToLastScreen();
-                            });
-                          },
-                          child: Text(
                             "Delete",
                             style: TextStyle(
                                 fontSize: 18,
@@ -189,16 +176,8 @@ class EditMedPageState extends State<EditMedPage> {
                         height: 50,
                         padding: EdgeInsets.only(right: 20),
                       ),
+                      flex: 1,
                     ),
-                  ],
-                ),
-                Container(height: 15),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Expanded(child: Container(), flex: 1),
                     Expanded(
                       child: Container(
                           child: FlatButton(
@@ -218,9 +197,8 @@ class EditMedPageState extends State<EditMedPage> {
                           ),
                           height: 50,
                           padding: EdgeInsets.only(right: 20)),
-                      flex: 2,
+                      flex: 1,
                     ),
-                    Expanded(child: Container(), flex: 1),
                   ],
                 ),
               ],
@@ -231,24 +209,50 @@ class EditMedPageState extends State<EditMedPage> {
     );
   }
 
-  Widget dayListTime(String day) {
+  Widget dayListTime(String day, List<Medicine> dayList, BuildContext context) {
     return Container(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        Container(
-          width: 400,
-          height: 100,
-          child: Card(
-            elevation: 5,
-            child: Text(day,
-                style: (TextStyle(fontWeight: FontWeight.w700, fontSize: 20))),
+        width: 400,
+        child: Card(
+          elevation: 5,
+          child: Container(
+            padding: EdgeInsets.all(20),
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  Text(
+                    day,
+                    style:
+                        (TextStyle(fontWeight: FontWeight.w700, fontSize: 20)),
+                  ),
+                  ListView.builder(
+                      itemCount: dayList.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, int position) {
+                        if (dayList[position].medName == medname)
+                          return Card(
+                            elevation: 5,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50)),
+                            child: Container(
+                              height: 60,
+                              width: 200,
+                              alignment: Alignment.centerLeft,
+                              padding: EdgeInsets.only(left: 30),
+                              child: Text(
+                                timeDisplay(dayList[position].time),
+                                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+                              ),
+                            ),
+                          );
+                        else
+                          return Container(
+                            height: 0,
+                          );
+                      }),
+                ]),
           ),
-        ),
-      ],
-    ));
+        ));
   }
 
   Future<Null> selectTime(BuildContext context) async {
@@ -270,5 +274,105 @@ class EditMedPageState extends State<EditMedPage> {
 
   void moveToLastScreen() {
     Navigator.pop(context, true);
+  }
+
+  void updateAllView() {
+    if (sunList == null) {
+      sunList = List<Medicine>();
+      final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+      dbFuture.then((database) {
+        Future<List<Medicine>> noteListFuture =
+            databaseHelper.getNoteList('sunday');
+        noteListFuture.then((noteList) {
+          setState(() {
+            this.sunList = noteList;
+          });
+        });
+      });
+    }
+
+    if (monList == null) {
+      monList = List<Medicine>();
+      final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+      dbFuture.then((database) {
+        Future<List<Medicine>> noteListFuture =
+            databaseHelper.getNoteList('monday');
+        noteListFuture.then((noteList) {
+          setState(() {
+            this.monList = noteList;
+          });
+        });
+      });
+    }
+
+    if (tueList == null) {
+      tueList = List<Medicine>();
+      final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+      dbFuture.then((database) {
+        Future<List<Medicine>> noteListFuture =
+            databaseHelper.getNoteList('tuesday');
+        noteListFuture.then((noteList) {
+          setState(() {
+            this.tueList = noteList;
+          });
+        });
+      });
+    }
+
+    if (wedList == null) {
+      wedList = List<Medicine>();
+      final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+      dbFuture.then((database) {
+        Future<List<Medicine>> noteListFuture =
+            databaseHelper.getNoteList('wednesday');
+        noteListFuture.then((noteList) {
+          setState(() {
+            this.wedList = noteList;
+          });
+        });
+      });
+    }
+
+    if (thuList == null) {
+      thuList = List<Medicine>();
+      final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+      dbFuture.then((database) {
+        Future<List<Medicine>> noteListFuture =
+            databaseHelper.getNoteList('thursday');
+        noteListFuture.then((noteList) {
+          setState(() {
+            this.thuList = noteList;
+          });
+        });
+      });
+    }
+
+    if (friList == null) {
+      friList = List<Medicine>();
+      final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+      dbFuture.then((database) {
+        Future<List<Medicine>> noteListFuture =
+            databaseHelper.getNoteList('friday');
+        noteListFuture.then((noteList) {
+          setState(() {
+            this.friList = noteList;
+          });
+        });
+      });
+    }
+
+    if (satList == null) {
+      satList = List<Medicine>();
+      final Future<Database> dbFuture = databaseHelper.initializeDatabase();
+      dbFuture.then((database) {
+        Future<List<Medicine>> noteListFuture =
+            databaseHelper.getNoteList('saturday');
+        noteListFuture.then((noteList) {
+          setState(() {
+            this.satList = noteList;
+          });
+        });
+      });
+    }
   }
 }

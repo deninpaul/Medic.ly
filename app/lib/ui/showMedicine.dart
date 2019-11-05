@@ -46,79 +46,88 @@ class ListMedicines extends State<MedicinesState> {
     return Stack(
       children: <Widget>[
         Container(
-            padding: EdgeInsets.only(top:20),
+            padding: EdgeInsets.only(top: 20),
             child: ListView.builder(
-          itemCount: medicinelist.length,
-          itemBuilder: (context, int position) {
-            return Container(
-                padding: EdgeInsets.all(15),
-                height: 160,
-                child: RaisedButton(
-                  color: Colors.white,
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(100))),
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditMedPage(medname: medicinelist[position], fullList: fullList,))) ;
-                  },
-                  child: Container(
-                    padding: EdgeInsets.only(bottom: 5, top: 5),
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          Expanded(
-                            child: Container(
-                              alignment: Alignment.centerLeft,
-                              child: Container(
-                                child: Image.asset(medIconlist[position]),
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    boxShadow: [
-                                      new BoxShadow(
-                                          color: Colors.black38,
-                                          blurRadius: 5,
-                                          offset: Offset(0, 2))
-                                    ]),
-                              ),
-                            ),
-                            flex: 1,
-                          ),
-                          Expanded(
-                            child: Container(
-                              alignment: Alignment.centerLeft,
-                              padding: EdgeInsets.fromLTRB(15, 20, 10, 20),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                                  Expanded(
-                                    child: Text(medicinelist[position],
-                                        style: TextStyle(
-                                            fontSize: 25,
-                                            fontWeight: FontWeight.w700)),
-                                    flex: 2,
+              itemCount: medicinelist.length,
+              itemBuilder: (context, int position) {
+                return Container(
+                    padding: EdgeInsets.all(15),
+                    height: 160,
+                    child: RaisedButton(
+                      color: Colors.white,
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(100))),
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditMedPage(
+                                      medname: medicinelist[position],
+                                      fullList: fullList,
+                                      medicon: medIconlist[position],
+                                      medtitle: titlelist[position],
+                                    )));
+                      },
+                      child: Container(
+                        padding: EdgeInsets.only(bottom: 5, top: 5),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  child: Container(
+                                    child: Image.asset(medIconlist[position]),
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        boxShadow: [
+                                          new BoxShadow(
+                                              color: Colors.black38,
+                                              blurRadius: 5,
+                                              offset: Offset(0, 2))
+                                        ]),
                                   ),
-                                  Expanded(
-                                    child: Text(titlelist[position],
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.black)),
-                                    flex: 2,
-                                  ),
-                                ],
+                                ),
+                                flex: 1,
                               ),
-                            ),
-                            flex: 2,
-                          )
-                        ]),
-                  ),
-                ));
-          },
-        ))
+                              Expanded(
+                                child: Container(
+                                  alignment: Alignment.centerLeft,
+                                  padding: EdgeInsets.fromLTRB(15, 20, 10, 20),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Text(medicinelist[position],
+                                            style: TextStyle(
+                                                fontSize: 25,
+                                                fontWeight: FontWeight.w700)),
+                                        flex: 2,
+                                      ),
+                                      Expanded(
+                                        child: Text(titlelist[position],
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.black)),
+                                        flex: 2,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                flex: 2,
+                              )
+                            ]),
+                      ),
+                    ));
+              },
+            ))
       ],
     );
   }
